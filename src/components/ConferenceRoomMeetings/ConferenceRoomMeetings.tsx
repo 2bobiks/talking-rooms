@@ -10,12 +10,13 @@ export const ConferenceRoomMeetings = ({
   meetingIdsByCalendarId,
 }: ConferenceRoomMeetingsProps) => {
   const [isHidden, setIsHidden] = useState(true);
-  const isMeetingsExist =
-    meetingIdsByCalendarId && meetingIdsByCalendarId.length;
+  const isMeetingsExist = Boolean(
+    meetingIdsByCalendarId && meetingIdsByCalendarId.length,
+  );
 
   return (
     <>
-      {isMeetingsExist && (
+      {isMeetingsExist && meetingIdsByCalendarId && (
         <>
           <S.VisibleMeetingsContainer isHidden={isHidden}>
             {meetingIdsByCalendarId.map((meetingId, index) => (
@@ -27,9 +28,16 @@ export const ConferenceRoomMeetings = ({
               />
             ))}
           </S.VisibleMeetingsContainer>
-          <S.Button onClick={() => setIsHidden((prev) => !prev)}>
-            Посмотреть расписание
-          </S.Button>
+          {isHidden && (
+            <S.Button onClick={() => setIsHidden((prev) => !prev)}>
+              Посмотреть расписание
+            </S.Button>
+          )}
+          {!isHidden && (
+            <S.Button onClick={() => setIsHidden((prev) => !prev)}>
+              Скрыть расписание
+            </S.Button>
+          )}
         </>
       )}
       {!isMeetingsExist && <span>сосамба нету митингов</span>}

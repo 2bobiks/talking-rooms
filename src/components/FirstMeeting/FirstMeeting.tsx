@@ -25,7 +25,7 @@ export const FirstMeeting = ({ meetingId }: MeetingProps) => {
         <S.Image src={isOngoing ? clock : calendar} alt={"clock"} />
         <S.StatusTitle theme={theme} ongoing={isOngoing}>
           {/* TODO: * i18n */}
-          {isOngoing ? "Сейчас используется" : "Следующая встреча"}
+          {rules.getStatusOfFirstMeeting(meeting)}
         </S.StatusTitle>
       </S.StatusContainer>
       <span style={theme.meetingTitle}>
@@ -37,7 +37,7 @@ export const FirstMeeting = ({ meetingId }: MeetingProps) => {
       {meeting?.who ? (
         <span style={theme.meetingWho}>Организатор: {meeting.who}</span>
       ) : (
-        "Организатора нет"
+        <span style={theme.meetingWho}>Организатора нет</span>
       )}
     </S.FirstMeetingContainer>
   );

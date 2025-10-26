@@ -1,9 +1,9 @@
 import { createSelector, createSlice, EntityState } from "@reduxjs/toolkit";
 import { meetingsAdapter } from "./adapters.ts";
-import { Meeting, MeetingId } from "./Meeting.ts";
+import { DateString, Meeting, MeetingId } from "./Meeting.ts";
 import { rules } from "../rules/rules.ts";
 import { api } from "../api/api.ts";
-import { isFuture, isPast } from "date-fns";
+import { isFuture, isPast, isSameDay, isToday } from "date-fns";
 
 type StatusType = "error" | "loading" | "fulfilled";
 
@@ -85,20 +85,38 @@ export const selectMeetingsIdsByFilter = createSelector(
   },
 );
 
-export const selectNextTodayMeetingsIdsByCalendarId = createSelector(
-  [meetingsAdapterSelectors.selectAll, (_, calendarId: number) => calendarId],
-  (meetings, calendarId) => {
-    if (calendarId) {
-      return meetings.reduce((acc: string[], meeting) => {
-        if (
-          calendarId === meeting.calendarId &&
-          rules.isTodayNextMeeting(meeting.startDate, meeting.endDate)
-        ) {
-          acc.push(meeting.meetingId);
-        }
+export const selectMeetingsIdsByCalendarIdAndDate = createSelector(
+  [
+    meetingsAdapterSelectors.selectAll,
+    (_, props: { calendarId: number; date: DateString }) => props,
+  ],
+  (meetings, props) => {
+    const { calendarId, date } = props;
 
-        return acc;
-      }, []);
+    if (calendarId) {
+      if (isToday(date)) {
+        return meetings.reduce((acc: MeetingId[], meeting) => {
+          if (
+            calendarId === meeting.calendarId &&
+            rules.isTodayNextMeeting(meeting.startDate, meeting.endDate)
+          ) {
+            acc.push(meeting.meetingId);
+          }
+
+          return acc;
+        }, []);
+      } else {
+        return meetings.reduce((acc: MeetingId[], meeting) => {
+          if (
+            calendarId === meeting.calendarId &&
+            isSameDay(date, meeting.startDate)
+          ) {
+            acc.push(meeting.meetingId);
+          }
+
+          return acc;
+        }, []);
+      }
     }
 
     return null;
@@ -108,7 +126,7 @@ export const selectNextTodayMeetingsIdsByCalendarId = createSelector(
 export const selectMeetingById = createSelector(
   [
     meetingsAdapterSelectors.selectById,
-    (_, meetingId: string | null) => meetingId,
+    (_, meetingId: MeetingId | null) => meetingId,
   ],
   (meeting, meetingId) => {
     if (meetingId) {

@@ -1,7 +1,9 @@
 import { DateString, Meeting } from "../redux/Meeting.ts";
 import {
+  differenceInHours,
   format,
   getDay,
+  getHours,
   isFuture,
   isPast,
   isToday,
@@ -129,6 +131,48 @@ const getDayOfTheWeek = (date: DateString | undefined) => {
   }
 };
 
+const getDayOfTheWeekOrToday = (date: DateString | undefined) => {
+  if (date) {
+    if (isToday(date)) {
+      return "сегодня";
+    }
+
+    return getDayOfTheWeek(date);
+  }
+};
+
+const getHourWord = (date: DateString) => {
+  const hours = getHours(date);
+  const lastDigit = hours % 10;
+  const lastTwoDigits = hours % 100;
+
+  if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+    return "часов";
+  }
+
+  if (lastDigit === 1) {
+    return "час";
+  }
+
+  if (lastDigit >= 2 && lastDigit <= 4) {
+    return "часа";
+  }
+
+  return "часов";
+};
+
+const getStatusOfFirstMeeting = (meeting: Meeting | undefined) => {
+  if (meeting) {
+    if (rules.isMeetingOngoing(meeting)) {
+      return "Сейчас используется";
+    } else if (isToday(meeting.startDate)) {
+      return `Следующая встреча через ${differenceInHours(meeting!.startDate, new Date())} ${rules.getHourWord(meeting!.startDate)}`;
+    }
+
+    return `Первая встреча в ${getDayOfTheWeek(meeting.startDate)}`;
+  }
+};
+
 export const rules = {
   isTodayNextMeeting,
   isMeetingOngoing,
@@ -138,4 +182,7 @@ export const rules = {
   statusName,
   statusColors,
   getDayOfTheWeek,
+  getDayOfTheWeekOrToday,
+  getHourWord,
+  getStatusOfFirstMeeting,
 };
