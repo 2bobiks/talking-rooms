@@ -17,6 +17,13 @@ export const AllMeetingsContainer = styled.div<AllMeetingsContainerProps>(
   }),
 );
 
+export const FilterContainer = styled.div({
+  display: "flex",
+  flexDirection: "row",
+  gap: "16px",
+  paddingBottom: "12px",
+});
+
 export const MeetingsContainer = styled.div({
   display: "flex",
   flexDirection: "column",

@@ -3,7 +3,8 @@ import { meetingsAdapter } from "./adapters.ts";
 import { DateString, Meeting, MeetingId } from "./Meeting.ts";
 import { rules } from "../rules/rules.ts";
 import { api } from "../api/api.ts";
-import { isFuture, isPast, isSameDay, isToday } from "date-fns";
+import { isSameDay, isToday } from "date-fns";
+import { Filter } from "../components/AllMeetings/AllMeetings.tsx";
 
 type StatusType = "error" | "loading" | "fulfilled";
 
@@ -61,27 +62,43 @@ export const selectMeetingsIdsByCalendarId = createSelector(
 );
 
 export const selectMeetingsIdsByFilter = createSelector(
-  [meetingsAdapterSelectors.selectAll, (_, filter: string | null) => filter],
-  (meetings, filter: string | null) => {
-    if (!filter) {
-      const meetingIds: MeetingId[] = [];
-
-      meetings.forEach((meeting) => {
-        if (rules.isMeetingOngoing(meeting) || isFuture(meeting.startDate)) {
-          meetingIds.push(meeting.meetingId);
-        }
-      });
-
-      meetings.forEach((meeting) => {
-        if (isPast(meeting.startDate) && !rules.isMeetingOngoing(meeting)) {
-          meetingIds.push(meeting.meetingId);
-        }
-      });
-
-      return meetingIds;
+  [meetingsAdapterSelectors.selectAll, (_, filter: Filter) => filter],
+  (meetings, filter: Filter) => {
+    if (!filter.meetingRoom && !filter.status) {
+      return rules.getSortedMeetingIds(meetings);
     }
 
-    return meetings.map((meeting) => meeting.meetingId);
+    if (filter.status && filter.meetingRoom) {
+      const filteredMeetings = meetings.reduce((acc: Meeting[], meeting) => {
+        if (
+          meeting.calendarId ===
+            rules.getCalendarIdByRoomName(filter.meetingRoom) &&
+          rules.statusNameFilter(rules.meetingStatus(meeting)) === filter.status
+        ) {
+          acc.push(meeting);
+        }
+
+        return acc;
+      }, []);
+
+      return rules.getSortedMeetingIds(filteredMeetings);
+    }
+
+    if (filter.status || filter.meetingRoom) {
+      const filteredMeetings = meetings.reduce((acc: Meeting[], meeting) => {
+        if (
+          meeting.calendarId ===
+            rules.getCalendarIdByRoomName(filter.meetingRoom) ||
+          rules.statusNameFilter(rules.meetingStatus(meeting)) === filter.status
+        ) {
+          acc.push(meeting);
+        }
+
+        return acc;
+      }, []);
+
+      return rules.getSortedMeetingIds(filteredMeetings);
+    }
   },
 );
 

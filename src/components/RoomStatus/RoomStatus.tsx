@@ -15,8 +15,12 @@ export const RoomStatus = ({ meetingId }: RoomStatusProps) => {
   const isOngoing = rules.isMeetingOngoing(meeting);
 
   return isOngoing ? (
-    <S.RoomStatusTitle ongoing>Занято</S.RoomStatusTitle>
+    <S.RoomStatusTitle ongoing title={"Сейчас переговорка занята"}>
+      Занято
+    </S.RoomStatusTitle>
   ) : (
-    <S.RoomStatusTitle>Свободно</S.RoomStatusTitle>
+    <S.RoomStatusTitle title={"Сейчас переговорка свободна"}>
+      Свободно
+    </S.RoomStatusTitle>
   );
 };

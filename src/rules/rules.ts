@@ -1,4 +1,4 @@
-import { DateString, Meeting } from "../redux/Meeting.ts";
+import { DateString, Meeting, MeetingId } from "../redux/Meeting.ts";
 import {
   differenceInHours,
   format,
@@ -10,6 +10,7 @@ import {
   isValid,
   isWithinInterval,
 } from "date-fns";
+import { meetingRoomA, meetingRoomB } from "../data/meetingRoomsIds.ts";
 
 type MeetingStatus = "no meeting" | "current" | "previous" | "next" | undefined;
 
@@ -80,6 +81,17 @@ const statusName = (meetingStatus: MeetingStatus) => {
       return "Предстоящая";
     case "previous":
       return "Прошедшая";
+  }
+};
+
+const statusNameFilter = (meetingStatus: MeetingStatus) => {
+  switch (meetingStatus) {
+    case "current":
+      return "Текущие";
+    case "next":
+      return "Предстоящие";
+    case "previous":
+      return "Прошедшие";
   }
 };
 
@@ -173,6 +185,34 @@ const getStatusOfFirstMeeting = (meeting: Meeting | undefined) => {
   }
 };
 
+const getCalendarIdByRoomName = (roomName: string | undefined) => {
+  if (roomName === meetingRoomA.meetingRoomName) {
+    return meetingRoomA.calendarId;
+  }
+
+  if (roomName === meetingRoomB.meetingRoomName) {
+    return meetingRoomB.calendarId;
+  }
+};
+
+const getSortedMeetingIds = (meetings: Meeting[]) => {
+  const meetingIds: MeetingId[] = [];
+
+  meetings.forEach((meeting) => {
+    if (rules.isMeetingOngoing(meeting) || isFuture(meeting.startDate)) {
+      meetingIds.push(meeting.meetingId);
+    }
+  });
+
+  meetings.forEach((meeting) => {
+    if (isPast(meeting.startDate) && !rules.isMeetingOngoing(meeting)) {
+      meetingIds.push(meeting.meetingId);
+    }
+  });
+
+  return meetingIds;
+};
+
 export const rules = {
   isTodayNextMeeting,
   isMeetingOngoing,
@@ -185,4 +225,7 @@ export const rules = {
   getDayOfTheWeekOrToday,
   getHourWord,
   getStatusOfFirstMeeting,
+  statusNameFilter,
+  getCalendarIdByRoomName,
+  getSortedMeetingIds,
 };
