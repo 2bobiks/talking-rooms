@@ -73,7 +73,7 @@ export const selectMeetingsIdsByFilter = createSelector(
         if (
           meeting.calendarId ===
             rules.getCalendarIdByRoomName(filter.meetingRoom) &&
-          rules.statusNameFilter(rules.meetingStatus(meeting)) === filter.status
+          rules.statusName(rules.meetingStatus(meeting)) === filter.status
         ) {
           acc.push(meeting);
         }
@@ -89,7 +89,7 @@ export const selectMeetingsIdsByFilter = createSelector(
         if (
           meeting.calendarId ===
             rules.getCalendarIdByRoomName(filter.meetingRoom) ||
-          rules.statusNameFilter(rules.meetingStatus(meeting)) === filter.status
+          rules.statusName(rules.meetingStatus(meeting)) === filter.status
         ) {
           acc.push(meeting);
         }
@@ -137,6 +137,18 @@ export const selectMeetingsIdsByCalendarIdAndDate = createSelector(
     }
 
     return null;
+  },
+);
+
+export const selectIsOngoingMeetingByCalendarId = createSelector(
+  [meetingsAdapterSelectors.selectAll, (_, calendarId: number) => calendarId],
+  (meetings, calendarId) => {
+    return Boolean(
+      meetings.filter(
+        (meeting) =>
+          meeting.calendarId === calendarId && rules.isMeetingOngoing(meeting),
+      ).length,
+    );
   },
 );
 

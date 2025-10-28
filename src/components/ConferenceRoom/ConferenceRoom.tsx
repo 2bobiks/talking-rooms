@@ -30,9 +30,7 @@ export const ConferenceRoom = ({ meetingRoom, date }: ConferenceRoomProps) => {
     <div style={theme.mainContainer}>
       <S.TitleContainer>
         <S.Title>{meetingRoomName}</S.Title>
-        {meetingIdsByCalendarId && (
-          <RoomStatus meetingId={meetingIdsByCalendarId[0]} />
-        )}
+        {meetingIdsByCalendarId && <RoomStatus calendarId={calendarId} />}
       </S.TitleContainer>
       <ConferenceRoomMeetings meetingIdsByCalendarId={meetingIdsByCalendarId} />
     </div>

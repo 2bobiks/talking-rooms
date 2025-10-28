@@ -8,7 +8,7 @@ export const MeetingContainer = styled.div({
   backgroundColor: "#F9FAFC",
   border: "1px solid #FCFCFD",
   borderRadius: "6px",
-  padding: "14px 14px 14px 14px",
+  padding: "14px",
   marginBottom: "6px",
 });
 

@@ -1,18 +1,15 @@
-import { MeetingId } from "../../redux/Meeting.ts";
 import { useAppSelector } from "../../redux/store.ts";
-import { selectMeetingById } from "../../redux/meetingsSlice.ts";
-import { rules } from "../../rules/rules.ts";
+import { selectIsOngoingMeetingByCalendarId } from "../../redux/meetingsSlice.ts";
 import * as S from "./RoomStatus.styled.ts";
 
 interface RoomStatusProps {
-  meetingId: MeetingId;
+  calendarId: number;
 }
 
-export const RoomStatus = ({ meetingId }: RoomStatusProps) => {
-  const meeting = useAppSelector((state) =>
-    selectMeetingById(state, meetingId),
+export const RoomStatus = ({ calendarId }: RoomStatusProps) => {
+  const isOngoing = useAppSelector((state) =>
+    selectIsOngoingMeetingByCalendarId(state, calendarId),
   );
-  const isOngoing = rules.isMeetingOngoing(meeting);
 
   return isOngoing ? (
     <S.RoomStatusTitle ongoing title={"Сейчас переговорка занята"}>

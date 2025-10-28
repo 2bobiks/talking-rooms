@@ -1,11 +1,14 @@
 import { DateString, Meeting, MeetingId } from "../redux/Meeting.ts";
 import {
   differenceInHours,
+  differenceInMinutes,
   format,
   getDay,
   getHours,
+  getMinutes,
   isFuture,
   isPast,
+  isSameHour,
   isToday,
   isValid,
   isWithinInterval,
@@ -81,17 +84,6 @@ const statusName = (meetingStatus: MeetingStatus) => {
       return "Предстоящая";
     case "previous":
       return "Прошедшая";
-  }
-};
-
-const statusNameFilter = (meetingStatus: MeetingStatus) => {
-  switch (meetingStatus) {
-    case "current":
-      return "Текущие";
-    case "next":
-      return "Предстоящие";
-    case "previous":
-      return "Прошедшие";
   }
 };
 
@@ -173,10 +165,31 @@ const getHourWord = (date: DateString) => {
   return "часов";
 };
 
+const getMinuteWord = (date: DateString) => {
+  const minutes = getMinutes(date);
+  const lastDigit = minutes % 10;
+
+  if (minutes >= 11 && minutes <= 14) {
+    return "минут";
+  }
+
+  if (lastDigit === 1) {
+    return "минуту";
+  }
+
+  if (lastDigit >= 2 && lastDigit <= 4) {
+    return "минуты";
+  }
+
+  return "минут";
+};
+
 const getStatusOfFirstMeeting = (meeting: Meeting | undefined) => {
   if (meeting) {
     if (rules.isMeetingOngoing(meeting)) {
       return "Сейчас используется";
+    } else if (isSameHour(meeting.startDate, new Date())) {
+      return `Следующая встреча через ${differenceInMinutes(meeting!.startDate, new Date())} ${rules.getMinuteWord(meeting!.startDate)}`;
     } else if (isToday(meeting.startDate)) {
       return `Следующая встреча через ${differenceInHours(meeting!.startDate, new Date())} ${rules.getHourWord(meeting!.startDate)}`;
     }
@@ -225,7 +238,7 @@ export const rules = {
   getDayOfTheWeekOrToday,
   getHourWord,
   getStatusOfFirstMeeting,
-  statusNameFilter,
   getCalendarIdByRoomName,
   getSortedMeetingIds,
+  getMinuteWord,
 };

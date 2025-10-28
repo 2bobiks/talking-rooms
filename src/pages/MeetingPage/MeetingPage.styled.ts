@@ -20,3 +20,24 @@ export const Title = styled.h1({
   color: "#0A0A0A",
   fontSize: "1.75em",
 });
+
+export const allMeetingsSkeleton = {
+  borderRadius: "16px",
+  padding: "28px",
+  backgroundColor: "#f6f6f6",
+  height: "150px",
+  margin: "22px",
+};
+
+export const conferenceRoomSkeleton = {
+  height: "330px",
+  borderRadius: "16px",
+  backgroundColor: "#f6f6f6",
+};
+
+export const dateSkeleton = {
+  height: "56px",
+  borderRadius: "16px",
+  backgroundColor: "#f6f6f6",
+  margin: "0 22px 22px 22px",
+};

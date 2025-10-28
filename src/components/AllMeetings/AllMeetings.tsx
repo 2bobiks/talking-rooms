@@ -39,9 +39,10 @@ export const AllMeetings = () => {
         />
       </S.FilterContainer>
       <S.MeetingsContainer>
-        {meetingIds.map((meetingId) => (
-          <Meeting meetingId={meetingId} key={meetingId} />
-        ))}
+        {meetingIds &&
+          meetingIds.map((meetingId) => (
+            <Meeting meetingId={meetingId} key={meetingId} />
+          ))}
       </S.MeetingsContainer>
     </S.AllMeetingsContainer>
   );

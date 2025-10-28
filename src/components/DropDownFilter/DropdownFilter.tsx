@@ -28,7 +28,7 @@ export const DropdownFilter = ({
       options={
         filterType === "meetingRoom"
           ? [meetingRoomA.meetingRoomName, meetingRoomB.meetingRoomName]
-          : ["Прошедшие", "Текущие", "Предстоящие"]
+          : ["Прошедшая", "Текущая", "Предстоящая"]
       }
       optionLabel="name"
       showClear
