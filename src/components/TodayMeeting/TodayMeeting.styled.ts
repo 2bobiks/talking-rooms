@@ -2,12 +2,12 @@ import styled from "@emotion/styled";
 
 export const MeetingContainer = styled.div({
   display: "flex",
-  minHeight: "40px",
   justifyContent: "space-between",
   alignItems: "center",
+  minHeight: "40px",
   backgroundColor: "#F9FAFC",
   border: "1px solid #FCFCFD",
-  borderRadius: "6px",
+  borderRadius: "10px",
   padding: "14px",
   marginBottom: "6px",
 });

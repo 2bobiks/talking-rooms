@@ -23,16 +23,16 @@ export const MeetingByCalendarId = ({
 
   return (
     <>
-      {indexOfMeeting === 0 &&
-        (isToday(meeting!.startDate) || isFuture(meeting!.startDate)) && (
-          <FirstMeeting meetingId={meetingId} />
-        )}
       {indexOfMeeting === 0 && (
         <S.AmountOfMeetingsTitle>
           Расписание на {rules.getDayOfTheWeekOrToday(meeting?.startDate)}{" "}
           (Встреч: {amountOfMeetings})
         </S.AmountOfMeetingsTitle>
       )}
+      {indexOfMeeting === 0 &&
+        (isToday(meeting!.startDate) || isFuture(meeting!.startDate)) && (
+          <FirstMeeting meetingId={meetingId} />
+        )}
 
       {indexOfMeeting !== 0 && <TodayMeeting meetingId={meetingId} />}
     </>

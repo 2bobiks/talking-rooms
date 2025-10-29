@@ -45,60 +45,25 @@ export const meetingsAdapterSelectors = meetingsAdapter.getSelectors(
   meetingsSelectors.meetings,
 );
 
-export const selectMeetingsIdsByCalendarId = createSelector(
-  [
-    meetingsAdapterSelectors.selectAll,
-    (_, calendarId: number | null) => calendarId,
-  ],
-  (meetings, calendarId) => {
-    return meetings.reduce((acc: string[], meeting) => {
-      if (!calendarId || meeting.calendarId === calendarId) {
-        acc.push(meeting.meetingId);
-      }
-
-      return acc;
-    }, []);
-  },
-);
-
 export const selectMeetingsIdsByFilter = createSelector(
   [meetingsAdapterSelectors.selectAll, (_, filter: Filter) => filter],
   (meetings, filter: Filter) => {
-    if (!filter.meetingRoom && !filter.status) {
-      return rules.getSortedMeetingIds(meetings);
-    }
+    return rules.getSortedMeetingIds(
+      meetings.filter((meeting) => {
+        const filterByStatus =
+          !filter.status ||
+          rules.statusName(rules.meetingStatus(meeting)) === filter.status;
 
-    if (filter.status && filter.meetingRoom) {
-      const filteredMeetings = meetings.reduce((acc: Meeting[], meeting) => {
-        if (
+        const filterByRoomName =
+          !filter.meetingRoom ||
           meeting.calendarId ===
-            rules.getCalendarIdByRoomName(filter.meetingRoom) &&
-          rules.statusName(rules.meetingStatus(meeting)) === filter.status
-        ) {
-          acc.push(meeting);
-        }
+            rules.getCalendarIdByRoomName(filter.meetingRoom);
 
-        return acc;
-      }, []);
+        const filterByWho = !filter.who || meeting.who === filter.who;
 
-      return rules.getSortedMeetingIds(filteredMeetings);
-    }
-
-    if (filter.status || filter.meetingRoom) {
-      const filteredMeetings = meetings.reduce((acc: Meeting[], meeting) => {
-        if (
-          meeting.calendarId ===
-            rules.getCalendarIdByRoomName(filter.meetingRoom) ||
-          rules.statusName(rules.meetingStatus(meeting)) === filter.status
-        ) {
-          acc.push(meeting);
-        }
-
-        return acc;
-      }, []);
-
-      return rules.getSortedMeetingIds(filteredMeetings);
-    }
+        return filterByStatus && filterByRoomName && filterByWho;
+      }),
+    );
   },
 );
 
@@ -107,9 +72,7 @@ export const selectMeetingsIdsByCalendarIdAndDate = createSelector(
     meetingsAdapterSelectors.selectAll,
     (_, props: { calendarId: number; date: DateString }) => props,
   ],
-  (meetings, props) => {
-    const { calendarId, date } = props;
-
+  (meetings, { calendarId, date }) => {
     if (calendarId) {
       if (isToday(date)) {
         return meetings.reduce((acc: MeetingId[], meeting) => {
@@ -149,6 +112,20 @@ export const selectIsOngoingMeetingByCalendarId = createSelector(
           meeting.calendarId === calendarId && rules.isMeetingOngoing(meeting),
       ).length,
     );
+  },
+);
+
+export const selectMeetingWhoDuplicates = createSelector(
+  [meetingsAdapterSelectors.selectAll],
+  (meetings) => {
+    const meetingWhoDuplicates = meetings
+      .map((meeting) => meeting.who)
+      .filter(
+        (meetingWho, index, meetingsWho) =>
+          meetingWho && meetingsWho.indexOf(meetingWho) !== index,
+      );
+
+    return [...new Set(meetingWhoDuplicates)];
   },
 );
 
