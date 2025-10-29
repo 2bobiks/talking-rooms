@@ -1,15 +1,13 @@
 import { useState } from "react";
 import * as S from "./ConferenceRoomMeetings.styled.ts";
-import { MeetingsByCalendarIdAndDate } from "../MeetingsByCalendarIdAndDAte/MeetingsByCalendarIdAndDate.tsx";
+import { MeetingByCalendarId } from "../MeetingByCalendarId/MeetingByCalendarId.tsx";
 
 interface ConferenceRoomMeetingsProps {
   meetingIdsByCalendarId: string[] | null;
-  calendarId: number;
 }
 
 export const ConferenceRoomMeetings = ({
   meetingIdsByCalendarId,
-  calendarId,
 }: ConferenceRoomMeetingsProps) => {
   const [isHidden, setIsHidden] = useState(true);
   const isMeetingsExist = Boolean(
@@ -21,10 +19,14 @@ export const ConferenceRoomMeetings = ({
       {isMeetingsExist && meetingIdsByCalendarId && (
         <>
           <S.VisibleMeetingsContainer isHidden={isHidden}>
-            <MeetingsByCalendarIdAndDate
-              meetingsIds={meetingIdsByCalendarId}
-              calendarId={calendarId}
-            />
+            {meetingIdsByCalendarId.map((meetingId, index) => (
+              <MeetingByCalendarId
+                meetingId={meetingId}
+                key={meetingId}
+                indexOfMeeting={index}
+                amountOfMeetings={meetingIdsByCalendarId.length}
+              />
+            ))}
           </S.VisibleMeetingsContainer>
           {isHidden && (
             <S.Button onClick={() => setIsHidden((prev) => !prev)}>
