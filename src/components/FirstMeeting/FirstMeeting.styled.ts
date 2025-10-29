@@ -26,7 +26,7 @@ export const FirstMeetingContainer = styled.div<FirstMeetingContainerProps>(
     padding: "14px",
     maxHeight: "125px",
     gap: "8px",
-    marginBottom: "22px",
+    flex: 1,
   }),
 );
 

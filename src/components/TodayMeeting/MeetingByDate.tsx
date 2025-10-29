@@ -3,13 +3,13 @@ import { selectMeetingById } from "../../redux/meetingsSlice.ts";
 import { rules } from "../../rules/rules.ts";
 import { useTheme } from "@emotion/react";
 import { MyTheme } from "../../theme/theme.ts";
-import * as S from "./TodayMeeting.styled.ts";
+import * as S from "./MeetingByDate.styled.ts";
 
 interface TodayMeetingProps {
   meetingId: string;
 }
 
-export const TodayMeeting = ({ meetingId }: TodayMeetingProps) => {
+export const MeetingByDate = ({ meetingId }: TodayMeetingProps) => {
   const meeting = useAppSelector((state) =>
     selectMeetingById(state, meetingId),
   );

@@ -129,6 +129,22 @@ export const selectMeetingWhoDuplicates = createSelector(
   },
 );
 
+export const selectOngoingMeetingsIdsByCalendarId = createSelector(
+  [meetingsAdapterSelectors.selectAll, (_, calendarId: number) => calendarId],
+  (meetings, calendarId) => {
+    return meetings.reduce((acc: MeetingId[], meeting) => {
+      if (
+        meeting.calendarId === calendarId &&
+        rules.isMeetingOngoing(meeting)
+      ) {
+        acc.push(meeting.meetingId);
+      }
+
+      return acc;
+    }, []);
+  },
+);
+
 export const selectMeetingById = createSelector(
   [
     meetingsAdapterSelectors.selectById,

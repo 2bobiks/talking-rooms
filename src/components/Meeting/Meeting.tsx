@@ -2,7 +2,6 @@ import { useAppSelector } from "../../redux/store.ts";
 import { selectMeetingById } from "../../redux/meetingsSlice.ts";
 import clock from "../../assets/grayClock.svg";
 import location from "../../assets/location.svg";
-import { getMeetingRoomName } from "../../functions/getMeetingRoomName.tsx";
 import { rules } from "../../rules/rules.ts";
 import { useTheme } from "@emotion/react";
 import { MyTheme } from "../../theme/theme.ts";
@@ -38,7 +37,7 @@ export const Meeting = ({ meetingId }: MeetingProps) => {
         </S.MeetingTime>
         <S.Image src={location} alt={""}></S.Image>
         <span style={theme.meetingTime}>
-          {getMeetingRoomName(meeting?.calendarId)}
+          {rules.getMeetingRoomName(meeting?.calendarId)}
         </span>
       </S.ContentContainer>
       {meeting?.who && (

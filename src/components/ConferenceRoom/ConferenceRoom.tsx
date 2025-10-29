@@ -32,7 +32,10 @@ export const ConferenceRoom = ({ meetingRoom, date }: ConferenceRoomProps) => {
         <S.Title>{meetingRoomName}</S.Title>
         {meetingIdsByCalendarId && <RoomStatus calendarId={calendarId} />}
       </S.TitleContainer>
-      <ConferenceRoomMeetings meetingIdsByCalendarId={meetingIdsByCalendarId} />
+      <ConferenceRoomMeetings
+        meetingIdsByCalendarId={meetingIdsByCalendarId}
+        calendarId={calendarId}
+      />
     </div>
   );
 };

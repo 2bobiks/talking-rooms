@@ -41,6 +41,16 @@ const isMeetingOngoing = (meeting: Meeting | undefined) => {
   }
 };
 
+const getMeetingRoomName = (meetingRoomId: number | undefined) => {
+  if (meetingRoomId) {
+    if (meetingRoomA.calendarId === meetingRoomId) {
+      return meetingRoomA.meetingRoomName;
+    }
+
+    return meetingRoomB.meetingRoomName;
+  }
+};
+
 const hoursTime = (date: string | undefined) => {
   if (date && isValid(new Date(date))) {
     return format(date, "HH:mm");
@@ -255,6 +265,7 @@ const getDropdownPlaceholder = (filterType: keyof Filter) => {
 export const rules = {
   isTodayNextMeeting,
   isMeetingOngoing,
+  getMeetingRoomName,
   hoursTime,
   timeRange,
   meetingStatus,
