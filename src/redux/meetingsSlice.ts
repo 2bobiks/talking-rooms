@@ -70,36 +70,25 @@ export const selectMeetingsIdsByFilter = createSelector(
 export const selectMeetingsIdsByCalendarIdAndDate = createSelector(
   [
     meetingsAdapterSelectors.selectAll,
-    (_, props: { calendarId: number; date: DateString }) => props,
+    (_, calendarId: number) => calendarId,
+    (_, __: number, date: DateString) => date,
   ],
-  (meetings, { calendarId, date }) => {
-    if (calendarId) {
-      if (isToday(date)) {
-        return meetings.reduce((acc: MeetingId[], meeting) => {
-          if (
-            calendarId === meeting.calendarId &&
-            rules.isTodayNextMeeting(meeting.startDate, meeting.endDate)
-          ) {
-            acc.push(meeting.meetingId);
-          }
+  (meetings, calendarId, date) => {
+    if (!calendarId) return null;
 
-          return acc;
-        }, []);
-      } else {
-        return meetings.reduce((acc: MeetingId[], meeting) => {
-          if (
-            calendarId === meeting.calendarId &&
-            isSameDay(date, meeting.startDate)
-          ) {
-            acc.push(meeting.meetingId);
-          }
+    const isTodayDate = isToday(date);
+    const targetDate = new Date(date);
 
-          return acc;
-        }, []);
-      }
-    }
-
-    return null;
+    // TODO: reduce
+    return meetings
+      .filter(
+        (meeting) =>
+          meeting.calendarId === calendarId &&
+          (isTodayDate
+            ? rules.isTodayNextMeeting(meeting.startDate, meeting.endDate)
+            : isSameDay(targetDate, meeting.startDate)),
+      )
+      .map((meeting) => meeting.meetingId);
   },
 );
 
@@ -129,21 +118,21 @@ export const selectMeetingWhoDuplicates = createSelector(
   },
 );
 
-export const selectOngoingMeetingsIdsByCalendarId = createSelector(
-  [meetingsAdapterSelectors.selectAll, (_, calendarId: number) => calendarId],
-  (meetings, calendarId) => {
-    return meetings.reduce((acc: MeetingId[], meeting) => {
-      if (
-        meeting.calendarId === calendarId &&
-        rules.isMeetingOngoing(meeting)
-      ) {
-        acc.push(meeting.meetingId);
-      }
-
-      return acc;
-    }, []);
-  },
-);
+// export const selectOngoingMeetingsIdsByCalendarId = createSelector(
+//   [meetingsAdapterSelectors.selectAll, (_, calendarId: number) => calendarId],
+//   (meetings, calendarId) => {
+//     return meetings.reduce((acc: MeetingId[], meeting) => {
+//       if (
+//         meeting.calendarId === calendarId &&
+//         rules.isMeetingOngoing(meeting)
+//       ) {
+//         acc.push(meeting.meetingId);
+//       }
+//
+//       return acc;
+//     }, []);
+//   },
+// );
 
 export const selectMeetingById = createSelector(
   [

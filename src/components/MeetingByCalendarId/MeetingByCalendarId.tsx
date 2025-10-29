@@ -24,16 +24,18 @@ export const MeetingByCalendarId = ({
   return (
     <>
       {indexOfMeeting === 0 && (
-        <S.AmountOfMeetingsTitle>
-          Расписание на {rules.getDayOfTheWeekOrToday(meeting?.startDate)}{" "}
-          (Встреч: {amountOfMeetings})
-        </S.AmountOfMeetingsTitle>
+        <>
+          <S.AmountOfMeetingsTitle>
+            Расписание на {rules.getDayOfTheWeekOrToday(meeting?.startDate)}
+            (Встреч: {amountOfMeetings})
+          </S.AmountOfMeetingsTitle>
+          {/*TODO: в консту условие + вынести в firstMeeting */}
+          {meeting &&
+            (isToday(meeting.startDate) || isFuture(meeting.startDate)) && (
+              <FirstMeeting meetingId={meetingId} />
+            )}
+        </>
       )}
-      {indexOfMeeting === 0 &&
-        (isToday(meeting!.startDate) || isFuture(meeting!.startDate)) && (
-          <FirstMeeting meetingId={meetingId} />
-        )}
-
       {indexOfMeeting !== 0 && <MeetingByDate meetingId={meetingId} />}
     </>
   );

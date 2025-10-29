@@ -4,8 +4,7 @@ import * as S from "./FirstMeeting.styled.ts";
 import clock from "../../assets/clock.svg";
 import calendar from "../../assets/calendar.svg";
 import { rules } from "../../rules/rules.ts";
-import { useTheme } from "@emotion/react";
-import { MyTheme } from "../../theme/theme.ts";
+import { useAppTheme } from "../../theme/theme.ts";
 
 interface MeetingProps {
   meetingId: string;
@@ -15,7 +14,7 @@ export const FirstMeeting = ({ meetingId }: MeetingProps) => {
   const meeting = useAppSelector((state) =>
     selectMeetingById(state, meetingId),
   );
-  const theme: MyTheme = useTheme();
+  const theme = useAppTheme();
 
   const isOngoing = rules.isMeetingOngoing(meeting);
 

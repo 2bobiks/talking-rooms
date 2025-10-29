@@ -3,8 +3,7 @@ import { selectMeetingById } from "../../redux/meetingsSlice.ts";
 import clock from "../../assets/grayClock.svg";
 import location from "../../assets/location.svg";
 import { rules } from "../../rules/rules.ts";
-import { useTheme } from "@emotion/react";
-import { MyTheme } from "../../theme/theme.ts";
+import { useAppTheme } from "../../theme/theme.ts";
 import * as S from "./Meeting.styled.ts";
 
 interface MeetingProps {
@@ -15,16 +14,14 @@ export const Meeting = ({ meetingId }: MeetingProps) => {
   const meeting = useAppSelector((state) =>
     selectMeetingById(state, meetingId),
   );
-  const theme: MyTheme = useTheme();
+  const theme = useAppTheme();
 
   const meetingStatus = rules.meetingStatus(meeting);
 
   return (
     <div style={theme.meetingContainer}>
       <S.ContentContainer>
-        <span style={theme.meetingTitle}>
-          {meeting?.title ? meeting.title : "Встреча"}
-        </span>
+        <span style={theme.meetingTitle}>{meeting?.title ?? "Встреча"}</span>
         <S.MeetingStatus {...rules.statusColors(meetingStatus)}>
           {rules.statusName(meetingStatus)}
         </S.MeetingStatus>

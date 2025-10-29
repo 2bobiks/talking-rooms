@@ -16,7 +16,8 @@ import {
 import { meetingRoomA, meetingRoomB } from "../data/meetingRoomsIds.ts";
 import { Filter } from "../components/AllMeetings/AllMeetings.tsx";
 
-type MeetingStatus = "no meeting" | "current" | "previous" | "next" | undefined;
+// без пробела
+type MeetingStatus = "no meeting" | "current" | "previous" | "next";
 
 const isTodayNextMeeting = (startDate: DateString, endDate: DateString) => {
   return (
@@ -39,54 +40,68 @@ const isMeetingOngoing = (meeting: Meeting | undefined) => {
       end: meeting.endDate,
     });
   }
+
+  return false;
 };
 
-const getMeetingRoomName = (meetingRoomId: number | undefined) => {
-  if (meetingRoomId) {
-    if (meetingRoomA.calendarId === meetingRoomId) {
+const getMeetingRoomName = (calendarId: number | undefined) => {
+  if (calendarId) {
+    if (meetingRoomA.calendarId === calendarId) {
       return meetingRoomA.meetingRoomName;
     }
 
     return meetingRoomB.meetingRoomName;
   }
+
+  return undefined;
 };
 
 const hoursTime = (date: string | undefined) => {
   if (date && isValid(new Date(date))) {
     return format(date, "HH:mm");
   }
+
+  return undefined;
 };
 
 const timeRange = (
-  startDate: string | undefined,
-  endDate: string | undefined,
+  startDate: DateString | undefined,
+  endDate: DateString | undefined,
 ) => {
   if (
-    startDate &&
-    endDate &&
-    isValid(new Date(startDate)) &&
-    isValid(new Date(endDate))
+    !startDate ||
+    !endDate ||
+    !isValid(new Date(startDate)) ||
+    !isValid(new Date(endDate))
   ) {
-    return `${rules.hoursTime(startDate)} - ${rules.hoursTime(endDate)}`;
+    return undefined;
   }
+
+  return `${hoursTime(startDate)} - ${hoursTime(endDate)}`;
 };
 
 const meetingStatus = (meeting: Meeting | undefined): MeetingStatus => {
-  const isOngoing = rules.isMeetingOngoing(meeting);
   if (!meeting) {
     return "no meeting";
   }
-  const { startDate, endDate } = meeting;
 
+  const { startDate, endDate } = meeting;
   if (isValid(new Date(startDate)) && isValid(new Date(endDate))) {
-    if (isOngoing) {
+    if (isMeetingOngoing(meeting)) {
       return "current";
-    } else if (isPast(startDate)) {
+    }
+    if (isPast(startDate)) {
       return "previous";
-    } else if (isFuture(endDate)) return "next";
+    }
+    if (isFuture(endDate)) {
+      return "next";
+    }
   }
+
+  return "no meeting";
 };
 
+// мб обьект шлепнуть ?
 const statusName = (meetingStatus: MeetingStatus) => {
   switch (meetingStatus) {
     case "current":
@@ -95,6 +110,8 @@ const statusName = (meetingStatus: MeetingStatus) => {
       return "Предстоящая";
     case "previous":
       return "Прошедшая";
+    default:
+      return;
   }
 };
 
@@ -154,6 +171,8 @@ const getDayOfTheWeekOrToday = (date: DateString | undefined) => {
 
     return getDayOfTheWeek(date);
   }
+
+  return undefined;
 };
 
 const getHourWord = (date: DateString) => {
@@ -196,19 +215,24 @@ const getMinuteWord = (date: DateString) => {
 };
 
 const getStatusOfFirstMeeting = (meeting: Meeting | undefined) => {
-  if (meeting) {
-    if (rules.isMeetingOngoing(meeting)) {
-      return "Сейчас используется";
-    } else if (isSameHour(meeting.startDate, new Date())) {
-      return `Следующая встреча через ${differenceInMinutes(meeting!.startDate, new Date())} ${rules.getMinuteWord(meeting!.startDate)}`;
-    } else if (isToday(meeting.startDate)) {
-      return `Следующая встреча через ${differenceInHours(meeting!.startDate, new Date())} ${rules.getHourWord(meeting!.startDate)}`;
-    }
-
-    return `Первая встреча в ${getDayOfTheWeek(meeting.startDate)}`;
+  if (!meeting) {
+    return undefined;
   }
+
+  if (isMeetingOngoing(meeting)) {
+    return "Сейчас используется";
+  }
+  if (isSameHour(meeting.startDate, new Date())) {
+    return `Следующая встреча через ${differenceInMinutes(meeting.startDate, new Date())} ${getMinuteWord(meeting.startDate)}`;
+  }
+  if (isToday(meeting.startDate)) {
+    return `Следующая встреча через ${differenceInHours(meeting.startDate, new Date())} ${getHourWord(meeting.startDate)}`;
+  }
+
+  return `Первая встреча в ${getDayOfTheWeek(meeting.startDate)}`;
 };
 
+// в отдельный файл с правилами календаря
 const getCalendarIdByRoomName = (roomName: string | undefined) => {
   if (roomName === meetingRoomA.meetingRoomName) {
     return meetingRoomA.calendarId;
@@ -219,22 +243,20 @@ const getCalendarIdByRoomName = (roomName: string | undefined) => {
   }
 };
 
-const getSortedMeetingIds = (meetings: Meeting[]) => {
-  const meetingIds: MeetingId[] = [];
+const getSortedMeetingIds = (meetings: Meeting[]): MeetingId[] => {
+  return [...meetings]
+    .sort((a, b) => {
+      const isAOngoing = isMeetingOngoing(a);
+      const isBOngoing = isMeetingOngoing(b);
+      const isAFuture = isFuture(a.startDate);
+      const isBFuture = isFuture(b.startDate);
 
-  meetings.forEach((meeting) => {
-    if (rules.isMeetingOngoing(meeting) || isFuture(meeting.startDate)) {
-      meetingIds.push(meeting.meetingId);
-    }
-  });
+      if (isAOngoing || (isAFuture && !isBOngoing && !isBFuture)) return -1;
+      if (!isBOngoing && !isBFuture) return 1;
 
-  meetings.forEach((meeting) => {
-    if (isPast(meeting.startDate) && !rules.isMeetingOngoing(meeting)) {
-      meetingIds.push(meeting.meetingId);
-    }
-  });
-
-  return meetingIds;
+      return 0;
+    })
+    .map((meeting) => meeting.meetingId);
 };
 
 const getDropdownOptions = (
@@ -262,14 +284,15 @@ const getDropdownPlaceholder = (filterType: keyof Filter) => {
   }
 };
 
+// почикать
 export const rules = {
   isTodayNextMeeting,
   isMeetingOngoing,
   getMeetingRoomName,
   hoursTime,
   timeRange,
-  meetingStatus,
   statusName,
+  meetingStatus,
   statusColors,
   getDayOfTheWeek,
   getDayOfTheWeekOrToday,

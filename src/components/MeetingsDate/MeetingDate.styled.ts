@@ -1,23 +1,18 @@
 import styled from "@emotion/styled";
-import { MyTheme } from "../../theme/theme.ts";
 
-interface DateContainerProps {
-  theme: MyTheme;
-}
-
-export const DateContainer = styled.div<DateContainerProps>((props) => ({
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "center",
-  alignItems: "center",
-  flex: props.theme.mainContainer?.flex,
-  minWidth: props.theme.mainContainer?.minWidth,
-  border: props.theme.mainContainer?.border,
-  borderRadius: props.theme.mainContainer?.borderRadius,
-  padding: "12px",
-  gap: "20px",
-  margin: "0 22px 22px 22px",
-}));
+export const DateContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex: ${({ theme }) => theme.mainContainer.flex};
+  min-width: ${({ theme }) => theme.mainContainer?.minWidth};
+  border: ${({ theme }) => theme.mainContainer?.border};
+  border-radius: ${({ theme }) => theme.mainContainer?.borderRadius};
+  padding: 12px;
+  gap: 20px;
+  margin: 0 22px 22px 22px;
+`;
 
 export const Button = styled.button({
   display: "flex",

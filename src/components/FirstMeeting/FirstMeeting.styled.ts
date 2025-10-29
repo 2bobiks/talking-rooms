@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { MyTheme } from "../../theme/theme.ts";
+import { AppTheme } from "../../theme/theme.ts";
 
 interface FirstMeetingContainerProps {
   ongoing?: boolean;
@@ -7,7 +7,7 @@ interface FirstMeetingContainerProps {
 
 interface StatusTitleProps {
   ongoing?: boolean;
-  theme: MyTheme;
+  theme: AppTheme;
 }
 
 export const Image = styled.img({

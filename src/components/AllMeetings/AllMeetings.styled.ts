@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
-import { MyTheme } from "../../theme/theme.ts";
+import { AppTheme } from "../../theme/theme.ts";
 
 interface AllMeetingsContainerProps {
-  theme: MyTheme;
+  theme: AppTheme;
 }
 
 export const AllMeetingsContainer = styled.div<AllMeetingsContainerProps>(

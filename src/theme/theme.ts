@@ -1,31 +1,15 @@
-import { Theme } from "@emotion/react";
-import * as React from "react";
+import { useTheme } from "@emotion/react";
+import { CSSProperties } from "react";
 
-interface StyleObject extends React.CSSProperties {
-  color?: string;
-  fontSize?: string;
-  fontWeight?: number | string;
-  margin?: string | number;
-  size?: string;
-  display?: string;
-  flexDirection?: "row-reverse" | "row" | "column" | "column-reverse";
-  flex?: number | string;
-  minWidth?: number | string;
-  border?: string;
-  borderRadius?: string;
-  padding?: string;
-  gap?: string;
+export interface AppTheme {
+  meetingTitle: CSSProperties;
+  meetingTime: CSSProperties;
+  meetingWho: CSSProperties;
+  mainContainer: CSSProperties;
+  meetingContainer: CSSProperties;
 }
 
-export interface MyTheme extends Theme {
-  meetingTitle?: StyleObject;
-  meetingTime?: StyleObject;
-  meetingWho?: StyleObject;
-  mainContainer?: StyleObject;
-  meetingContainer?: StyleObject;
-}
-
-export const theme: MyTheme = {
+export const theme: AppTheme = {
   meetingTitle: {
     color: "#0a0a0a",
     fontSize: "0.9em",
@@ -63,3 +47,5 @@ export const theme: MyTheme = {
     borderRadius: "10px",
   },
 };
+
+export const useAppTheme = (): AppTheme => useTheme() as AppTheme;

@@ -1,42 +1,35 @@
-import { useTheme } from "@emotion/react";
 import * as S from "./MeetingDate.styled.ts";
-import { MyTheme } from "../../theme/theme.ts";
-import { addDays, format, isToday, startOfDay, subDays } from "date-fns";
+import { addDays, startOfDay, subDays } from "date-fns";
 import leftArrow from "../../assets/arrowLeft.svg";
 import rightArrow from "../../assets/arrowRight.svg";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, PropsWithChildren, SetStateAction } from "react";
 import { DateString } from "../../redux/Meeting.ts";
 
-interface MeetingDateProps {
-  date: DateString;
+interface MeetingDateProps extends PropsWithChildren {
   setDate: Dispatch<SetStateAction<DateString>>;
 }
 
-export const MeetingsDate = ({ date, setDate }: MeetingDateProps) => {
-  const theme: MyTheme = useTheme();
+const dateActions: Record<"left" | "right", typeof subDays | typeof addDays> = {
+  left: subDays,
+  right: addDays,
+};
 
-  const getNewDate = (button: "left" | "right", date: DateString) => {
-    if (button === "left") {
-      if (isToday(date)) {
-        setDate(new Date().toISOString());
-      }
-      setDate(startOfDay(subDays(date, 1)).toISOString());
-    } else if (button === "right") {
-      if (isToday(date)) {
-        setDate(new Date().toISOString());
-      }
-      setDate(startOfDay(addDays(date, 1)).toISOString());
-    }
+const updateDate = (date: DateString, position: "left" | "right") =>
+  startOfDay(dateActions[position](date, 1)).toISOString();
+
+export const MeetingsDate = ({ setDate, children }: MeetingDateProps) => {
+  const getNewDate = (position: "left" | "right") => {
+    setDate((prev) => updateDate(prev, position));
   };
 
   return (
-    <S.DateContainer theme={theme}>
-      <S.Button onClick={() => getNewDate("left", date)}>
-        <S.Image src={leftArrow} alt={"arrow"} />{" "}
+    <S.DateContainer>
+      <S.Button onClick={() => getNewDate("left")}>
+        <S.Image src={leftArrow} alt={"arrow"} />
       </S.Button>
-      <h5 style={theme.meetingTitle}>{format(date, "dd.MM.yyyy")}</h5>
-      <S.Button onClick={() => getNewDate("right", date)}>
-        <S.Image src={rightArrow} alt={"arrow"} />{" "}
+      {children}
+      <S.Button onClick={() => getNewDate("right")}>
+        <S.Image src={rightArrow} alt={"arrow"} />
       </S.Button>
     </S.DateContainer>
   );

@@ -1,8 +1,7 @@
 import { useAppSelector } from "../../redux/store.ts";
 import { selectMeetingById } from "../../redux/meetingsSlice.ts";
 import { rules } from "../../rules/rules.ts";
-import { useTheme } from "@emotion/react";
-import { MyTheme } from "../../theme/theme.ts";
+import { useAppTheme } from "../../theme/theme.ts";
 import * as S from "./MeetingByDate.styled.ts";
 
 interface TodayMeetingProps {
@@ -13,7 +12,7 @@ export const MeetingByDate = ({ meetingId }: TodayMeetingProps) => {
   const meeting = useAppSelector((state) =>
     selectMeetingById(state, meetingId),
   );
-  const theme: MyTheme = useTheme();
+  const theme = useAppTheme();
 
   return (
     <S.MeetingContainer>

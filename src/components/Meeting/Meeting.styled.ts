@@ -1,9 +1,7 @@
 import styled from "@emotion/styled";
+import { rules } from "../../rules/rules.ts";
 
-interface MeetingStatusProps {
-  color: string;
-  fontColor: string;
-}
+type MeetingStatusProps = ReturnType<typeof rules.statusColors>;
 
 export const MeetingStatus = styled.h5<MeetingStatusProps>((props) => ({
   margin: 0,
