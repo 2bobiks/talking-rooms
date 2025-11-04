@@ -22,11 +22,11 @@ export const AllMeetings = () => {
   //   status: undefined,
   //   who: undefined,
   // }));
-  const [filter, setFilter] = useState<Filter>({
+  const [filter, setFilter] = useState<Filter>(() => ({
     meetingRoom: undefined,
     status: undefined,
     who: undefined,
-  });
+  }));
 
   const meetingIds = useAppSelector((state) =>
     selectMeetingsIdsByFilter(state, filter),

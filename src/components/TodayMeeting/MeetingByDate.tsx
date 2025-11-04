@@ -1,8 +1,8 @@
 import { useAppSelector } from "../../redux/store.ts";
 import { selectMeetingById } from "../../redux/meetingsSlice.ts";
-import { rules } from "../../rules/rules.ts";
 import { useAppTheme } from "../../theme/theme.ts";
 import * as S from "./MeetingByDate.styled.ts";
+import { dateHelper } from "../../lib/dateHelper.ts";
 
 interface TodayMeetingProps {
   meetingId: string;
@@ -24,10 +24,10 @@ export const MeetingByDate = ({ meetingId }: TodayMeetingProps) => {
       </S.TextContainer>
       <S.TextContainer>
         <span style={theme.meetingTime}>
-          {rules.hoursTime(meeting?.startDate)}
+          {dateHelper.hoursTime(meeting?.startDate)}
         </span>
         <span style={theme.meetingTime}>
-          {rules.hoursTime(meeting?.endDate)}
+          {dateHelper.hoursTime(meeting?.endDate)}
         </span>
       </S.TextContainer>
     </S.MeetingContainer>

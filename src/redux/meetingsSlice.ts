@@ -5,6 +5,9 @@ import { rules } from "../rules/rules.ts";
 import { api } from "../api/api.ts";
 import { isSameDay, isToday } from "date-fns";
 import { Filter } from "../components/AllMeetings/AllMeetings.tsx";
+import { RootState } from "./store.ts";
+import { meetingStatusHelper } from "../lib/meetingStatusHelper.ts";
+import { meetingCalendarIdHelper } from "../lib/meetingCalendarIdHelper.ts";
 
 type StatusType = "error" | "loading" | "fulfilled";
 
@@ -52,12 +55,13 @@ export const selectMeetingsIdsByFilter = createSelector(
       meetings.filter((meeting) => {
         const filterByStatus =
           !filter.status ||
-          rules.statusName(rules.meetingStatus(meeting)) === filter.status;
+          meetingStatusHelper.statusName(rules.meetingStatus(meeting)) ===
+            filter.status;
 
         const filterByRoomName =
           !filter.meetingRoom ||
           meeting.calendarId ===
-            rules.getCalendarIdByRoomName(filter.meetingRoom);
+            meetingCalendarIdHelper.getCalendarIdByRoomName(filter.meetingRoom);
 
         const filterByWho = !filter.who || meeting.who === filter.who;
 
@@ -79,16 +83,18 @@ export const selectMeetingsIdsByCalendarIdAndDate = createSelector(
     const isTodayDate = isToday(date);
     const targetDate = new Date(date);
 
-    // TODO: reduce
-    return meetings
-      .filter(
-        (meeting) =>
-          meeting.calendarId === calendarId &&
-          (isTodayDate
-            ? rules.isTodayNextMeeting(meeting.startDate, meeting.endDate)
-            : isSameDay(targetDate, meeting.startDate)),
-      )
-      .map((meeting) => meeting.meetingId);
+    return meetings.reduce((acc: MeetingId[], meeting) => {
+      if (
+        meeting.calendarId === calendarId &&
+        (isTodayDate
+          ? rules.isTodayNextMeeting(meeting.startDate, meeting.endDate)
+          : isSameDay(targetDate, meeting.startDate))
+      ) {
+        acc.push(meeting.meetingId);
+      }
+
+      return acc;
+    }, []);
   },
 );
 
@@ -133,6 +139,11 @@ export const selectMeetingWhoDuplicates = createSelector(
 //     }, []);
 //   },
 // );
+
+export const selectMeetingsStatus = createSelector(
+  (state: RootState) => state.meetings,
+  (meetings) => meetings.status,
+);
 
 export const selectMeetingById = createSelector(
   [

@@ -2,9 +2,8 @@ import { FirstMeeting } from "../FirstMeeting/FirstMeeting.tsx";
 import { MeetingByDate } from "../TodayMeeting/MeetingByDate.tsx";
 import { useAppSelector } from "../../redux/store.ts";
 import { selectMeetingById } from "../../redux/meetingsSlice.ts";
-import { isFuture, isToday } from "date-fns";
 import * as S from "./MeetingByCalendarId.styled.ts";
-import { rules } from "../../rules/rules.ts";
+import { dateHelper } from "../../lib/dateHelper.ts";
 
 interface MeetingByCalendarIdProps {
   meetingId: string;
@@ -26,14 +25,11 @@ export const MeetingByCalendarId = ({
       {indexOfMeeting === 0 && (
         <>
           <S.AmountOfMeetingsTitle>
-            Расписание на {rules.getDayOfTheWeekOrToday(meeting?.startDate)}
+            Расписание на{" "}
+            {dateHelper.getDayOfTheWeekOrToday(meeting?.startDate)}
             (Встреч: {amountOfMeetings})
           </S.AmountOfMeetingsTitle>
-          {/*TODO: в консту условие + вынести в firstMeeting */}
-          {meeting &&
-            (isToday(meeting.startDate) || isFuture(meeting.startDate)) && (
-              <FirstMeeting meetingId={meetingId} />
-            )}
+          <FirstMeeting meetingId={meetingId} />
         </>
       )}
       {indexOfMeeting !== 0 && <MeetingByDate meetingId={meetingId} />}

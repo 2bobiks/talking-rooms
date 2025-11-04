@@ -5,6 +5,9 @@ import location from "../../assets/location.svg";
 import { rules } from "../../rules/rules.ts";
 import { useAppTheme } from "../../theme/theme.ts";
 import * as S from "./Meeting.styled.ts";
+import { meetingStatusHelper } from "../../lib/meetingStatusHelper.ts";
+import { meetingCalendarIdHelper } from "../../lib/meetingCalendarIdHelper.ts";
+import { dateHelper } from "../../lib/dateHelper.ts";
 
 interface MeetingProps {
   meetingId: string;
@@ -22,19 +25,19 @@ export const Meeting = ({ meetingId }: MeetingProps) => {
     <div style={theme.meetingContainer}>
       <S.ContentContainer>
         <span style={theme.meetingTitle}>{meeting?.title ?? "Встреча"}</span>
-        <S.MeetingStatus {...rules.statusColors(meetingStatus)}>
-          {rules.statusName(meetingStatus)}
+        <S.MeetingStatus {...meetingStatusHelper.statusColors(meetingStatus)}>
+          {meetingStatusHelper.statusName(meetingStatus)}
         </S.MeetingStatus>
       </S.ContentContainer>
       <S.ContentContainer>
         {/* TODO: инлайн свг как реакт компонент */}
         <S.Image src={clock} alt={""} />
         <S.MeetingTime style={theme.meetingTime}>
-          {`${rules.getDayOfTheWeek(meeting?.startDate)} ${rules.timeRange(meeting?.startDate, meeting?.endDate)}`}
+          {`${dateHelper.getDayOfTheWeek(meeting?.startDate)} ${dateHelper.timeRange(meeting?.startDate, meeting?.endDate)}`}
         </S.MeetingTime>
         <S.Image src={location} alt={""}></S.Image>
         <span style={theme.meetingTime}>
-          {rules.getMeetingRoomName(meeting?.calendarId)}
+          {meetingCalendarIdHelper.getMeetingRoomName(meeting?.calendarId)}
         </span>
       </S.ContentContainer>
       {meeting?.who && (
