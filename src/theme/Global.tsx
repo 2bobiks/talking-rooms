@@ -1,6 +1,9 @@
 import { css, Global } from "@emotion/react";
+import { useAppTheme } from "./theme.ts";
 
 export const GlobalStyles = () => {
+  const theme = useAppTheme();
+
   return (
     <Global
       styles={css`
@@ -11,7 +14,23 @@ export const GlobalStyles = () => {
           margin: 0;
           padding: 0;
           font-family: "Inter", sans-serif;
+          background-color: ${theme.palette.colors.background};
+            transition:
+                    background-color 0.3s ease,
+                    color 0.3s ease,
+                    border-color 0.3s ease,
+                    fill 0.3s ease,
+                    stroke 0.3s ease;
         }
+          * {
+              transition:
+                      background-color 0.3s ease,
+                      color 0.3s ease,
+                      border-color 0.3s ease,
+                      fill 0.3s ease,
+                      stroke 0.3s ease;
+          }
+      }
       `}
     />
   );

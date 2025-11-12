@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction } from "react";
 import * as S from "./DropdownFilter.styled.ts";
 import { Filter } from "../AllMeetings/AllMeetings.tsx";
 import { dropdownHelper } from "../../lib/dropdownHelper.ts";
+import { useAppTheme } from "../../theme/theme.ts";
 
 interface DropdownFilterProps {
   filterType: keyof Filter;
@@ -17,6 +18,8 @@ export const DropdownFilter = ({
   setFilter,
   meetingWhoDuplicates,
 }: DropdownFilterProps) => {
+  const theme = useAppTheme();
+
   return (
     <div>
       {!(filterType === "who" && meetingWhoDuplicates.length === 0) && (
@@ -38,7 +41,7 @@ export const DropdownFilter = ({
           optionLabel="name"
           showClear
           placeholder={dropdownHelper.getDropdownPlaceholder(filterType)}
-          style={S.dropdownFilterStyled}
+          style={S.dropdownFilterStyled(theme)}
           panelClassName={S.dropdownAllElements}
           itemTemplate={(option) => (
             <S.DropdownWrapper>{option}</S.DropdownWrapper>

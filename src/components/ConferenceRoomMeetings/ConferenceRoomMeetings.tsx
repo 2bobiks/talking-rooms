@@ -36,7 +36,9 @@ export const ConferenceRoomMeetings = ({
           </S.Button>
         </>
       )}
-      {!isMeetingsExist && <span>сосамба нету митингов</span>}
+      {!isMeetingsExist && (
+        <S.NoMeetingTitle>сосамба нету митингов</S.NoMeetingTitle>
+      )}
     </>
   );
 };

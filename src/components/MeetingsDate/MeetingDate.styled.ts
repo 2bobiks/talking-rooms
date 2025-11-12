@@ -14,24 +14,24 @@ export const DateContainer = styled.div`
   margin: 0 22px 22px 22px;
 `;
 
-export const Button = styled.button({
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  marginTop: "auto",
-  padding: "8px",
-  border: "1px solid #E8E8E8",
-  borderRadius: "6px",
-  backgroundColor: "#FFFFFF",
-  fontSize: "0.88em",
-  transition: "transform 0.1s ease, backgroundColor 0.1s ease",
+export const Button = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: auto;
+  padding: 8px;
+  border: ${({ theme }) => theme.mainContainer?.border};
+  border-radius: 6px;
+  background-color: transparent;
+  font-size: 0.88em;
+  transition: transform 0.1s ease, backgroundColor 0.1s ease;
 
-  "&:hover": {
-    transform: "scale(0.97)",
-    backgroundColor: "#F9FAFC",
+  &:hover {
+    transform: scale(0.97);
+    background-color: #F9FAFC;
   },
-});
-
-export const Image = styled.img({
-  maxHeight: "14px",
-});
+`;
+export const Image = styled.img`
+  max-height: 14px;
+  fill: ${({ theme }) => theme.palette.colors.textColor.primary};
+`;

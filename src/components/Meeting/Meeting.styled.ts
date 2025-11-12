@@ -1,14 +1,16 @@
 import styled from "@emotion/styled";
 import { meetingStatusHelper } from "../../lib/meetingStatusHelper.ts";
 
-type MeetingStatusProps = ReturnType<typeof meetingStatusHelper.statusColors>;
+type MeetingStatusProps = ReturnType<
+  typeof meetingStatusHelper.getStatusColors
+>;
 
 export const MeetingStatus = styled.h5<MeetingStatusProps>((props) => ({
   margin: 0,
   padding: "4px 10px 4px 10px",
   color: props.fontColor,
   backgroundColor: props.color,
-  border: "1px solid #F3F4F6",
+  border: "1px solid transparent",
   borderRadius: "7px",
   fontSize: "0.8em",
   fontWeight: 400,

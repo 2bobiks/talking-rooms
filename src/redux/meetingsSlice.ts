@@ -55,7 +55,7 @@ export const selectMeetingsIdsByFilter = createSelector(
       meetings.filter((meeting) => {
         const filterByStatus =
           !filter.status ||
-          meetingStatusHelper.statusName(rules.meetingStatus(meeting)) ===
+          meetingStatusHelper.getStatusName(rules.meetingStatus(meeting)) ===
             filter.status;
 
         const filterByRoomName =

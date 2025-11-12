@@ -1,24 +1,30 @@
 import styled from "@emotion/styled";
 
-export const allMeetingsSkeleton = {
-  borderRadius: "16px",
-  padding: "28px",
-  backgroundColor: "#f6f6f6",
-  height: "150px",
-  margin: "22px",
+export const allMeetingsSkeleton = (skeletonColor: string) => {
+  return {
+    borderRadius: "16px",
+    padding: "28px",
+    backgroundColor: skeletonColor,
+    height: "150px",
+    margin: "22px",
+  };
 };
 
-export const conferenceRoomSkeleton = {
-  height: "330px",
-  borderRadius: "16px",
-  backgroundColor: "#f6f6f6",
+export const conferenceRoomSkeleton = (skeletonColor: string) => {
+  return {
+    height: "330px",
+    borderRadius: "16px",
+    backgroundColor: skeletonColor,
+  };
 };
 
-export const dateSkeleton = {
-  height: "56px",
-  borderRadius: "16px",
-  backgroundColor: "#f6f6f6",
-  margin: "0 22px 22px 22px",
+export const dateSkeleton = (skeletonColor: string) => {
+  return {
+    height: "56px",
+    borderRadius: "16px",
+    backgroundColor: skeletonColor,
+    margin: "0 22px 22px 22px",
+  };
 };
 
 export const Container = styled.div({

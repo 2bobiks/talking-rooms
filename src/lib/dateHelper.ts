@@ -1,8 +1,8 @@
 import {
+  differenceInMinutes,
   format,
   getDay,
   getHours,
-  getMinutes,
   isToday,
   isValid,
 } from "date-fns";
@@ -82,7 +82,7 @@ const getHourWord = (date: DateString) => {
 };
 
 const getMinuteWord = (date: DateString) => {
-  const minutes = getMinutes(date);
+  const minutes = differenceInMinutes(date, new Date());
   const lastDigit = minutes % 10;
 
   if (minutes >= 11 && minutes <= 14) {
@@ -101,8 +101,8 @@ const getMinuteWord = (date: DateString) => {
 };
 
 export const dateHelper = {
-  hoursTime: getHoursTime,
-  timeRange: getTimeRange,
+  getHoursTime,
+  getTimeRange,
   getDayOfTheWeek,
   getDayOfTheWeekOrToday,
   getHourWord,

@@ -24,10 +24,10 @@ export const MeetingByDate = ({ meetingId }: TodayMeetingProps) => {
       </S.TextContainer>
       <S.TextContainer>
         <span style={theme.meetingTime}>
-          {dateHelper.hoursTime(meeting?.startDate)}
+          {dateHelper.getHoursTime(meeting?.startDate)}
         </span>
         <span style={theme.meetingTime}>
-          {dateHelper.hoursTime(meeting?.endDate)}
+          {dateHelper.getHoursTime(meeting?.endDate)}
         </span>
       </S.TextContainer>
     </S.MeetingContainer>

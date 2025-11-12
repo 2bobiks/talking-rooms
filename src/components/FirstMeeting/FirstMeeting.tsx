@@ -8,6 +8,7 @@ import { useAppTheme } from "../../theme/theme.ts";
 import { isFuture, isToday } from "date-fns";
 import { meetingStatusHelper } from "../../lib/meetingStatusHelper.ts";
 import { dateHelper } from "../../lib/dateHelper.ts";
+import { MeetingByDate } from "../TodayMeeting/MeetingByDate.tsx";
 
 interface MeetingProps {
   meetingId: string;
@@ -25,27 +26,30 @@ export const FirstMeeting = ({ meetingId }: MeetingProps) => {
   );
 
   return (
-    isValidFirstMeeting && (
-      <S.FirstMeetingContainer ongoing={isOngoing}>
-        <S.StatusContainer>
-          <S.Image src={isOngoing ? clock : calendar} alt={"clock"} />
-          <S.StatusTitle theme={theme} ongoing={isOngoing}>
-            {/* TODO: * i18n */}
-            {meetingStatusHelper.getStatusOfFirstMeeting(meeting)}
-          </S.StatusTitle>
-        </S.StatusContainer>
-        <span style={theme.meetingTitle}>
-          {meeting?.title ? meeting.title : "Встреча"}
-        </span>
-        <span style={theme.meetingTime}>
-          {dateHelper.timeRange(meeting?.startDate, meeting?.endDate)}
-        </span>
-        {meeting?.who ? (
-          <span style={theme.meetingWho}>Организатор: {meeting.who}</span>
-        ) : (
-          <span style={theme.meetingWho}>Организатора нет</span>
-        )}
-      </S.FirstMeetingContainer>
-    )
+    <>
+      {isValidFirstMeeting && (
+        <S.FirstMeetingContainer ongoing={isOngoing}>
+          <S.StatusContainer>
+            <S.Image src={isOngoing ? clock : calendar} alt={"clock"} />
+            <S.StatusTitle ongoing={isOngoing}>
+              {/* TODO: * i18n */}
+              {meetingStatusHelper.getStatusOfFirstMeeting(meeting)}
+            </S.StatusTitle>
+          </S.StatusContainer>
+          <span style={theme.meetingTitle}>
+            {meeting?.title ? meeting.title : "Встреча"}
+          </span>
+          <span style={theme.meetingTime}>
+            {dateHelper.getTimeRange(meeting?.startDate, meeting?.endDate)}
+          </span>
+          {meeting?.who ? (
+            <span style={theme.meetingWho}>Организатор: {meeting.who}</span>
+          ) : (
+            <span style={theme.meetingWho}>Организатора нет</span>
+          )}
+        </S.FirstMeetingContainer>
+      )}
+      {!isValidFirstMeeting && <MeetingByDate meetingId={meetingId} />}
+    </>
   );
 };

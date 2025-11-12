@@ -26,8 +26,8 @@ export const MeetingByCalendarId = ({
         <>
           <S.AmountOfMeetingsTitle>
             Расписание на{" "}
-            {dateHelper.getDayOfTheWeekOrToday(meeting?.startDate)}
-            (Встреч: {amountOfMeetings})
+            {dateHelper.getDayOfTheWeekOrToday(meeting?.startDate)} (Встреч:{" "}
+            {amountOfMeetings})
           </S.AmountOfMeetingsTitle>
           <FirstMeeting meetingId={meetingId} />
         </>

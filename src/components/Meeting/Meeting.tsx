@@ -25,15 +25,20 @@ export const Meeting = ({ meetingId }: MeetingProps) => {
     <div style={theme.meetingContainer}>
       <S.ContentContainer>
         <span style={theme.meetingTitle}>{meeting?.title ?? "Встреча"}</span>
-        <S.MeetingStatus {...meetingStatusHelper.statusColors(meetingStatus)}>
-          {meetingStatusHelper.statusName(meetingStatus)}
+        <S.MeetingStatus
+          {...meetingStatusHelper.getStatusColors({
+            meetingStatus,
+            themeName: theme.palette.colors.themeName,
+          })}
+        >
+          {meetingStatusHelper.getStatusName(meetingStatus)}
         </S.MeetingStatus>
       </S.ContentContainer>
       <S.ContentContainer>
         {/* TODO: инлайн свг как реакт компонент */}
         <S.Image src={clock} alt={""} />
         <S.MeetingTime style={theme.meetingTime}>
-          {`${dateHelper.getDayOfTheWeek(meeting?.startDate)} ${dateHelper.timeRange(meeting?.startDate, meeting?.endDate)}`}
+          {`${dateHelper.getDayOfTheWeek(meeting?.startDate)} ${dateHelper.getTimeRange(meeting?.startDate, meeting?.endDate)}`}
         </S.MeetingTime>
         <S.Image src={location} alt={""}></S.Image>
         <span style={theme.meetingTime}>

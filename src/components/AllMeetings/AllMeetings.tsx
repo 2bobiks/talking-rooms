@@ -3,7 +3,6 @@ import {
   selectMeetingsIdsByFilter,
   selectMeetingWhoDuplicates,
 } from "../../redux/meetingsSlice.ts";
-import { useAppTheme } from "../../theme/theme.ts";
 import * as S from "./AllMeetings.styled.ts";
 import { DropdownFilter } from "../DropDownFilter/DropdownFilter.tsx";
 import { useState } from "react";
@@ -36,10 +35,8 @@ export const AllMeetings = () => {
     selectMeetingWhoDuplicates(state),
   );
 
-  const theme = useAppTheme();
-
   return (
-    <S.AllMeetingsContainer theme={theme}>
+    <S.AllMeetingsContainer>
       <S.TitleContainer>Все встречи</S.TitleContainer>
       {/* TODO: сюда только функцию для обновления  */}
       <S.FilterContainer>

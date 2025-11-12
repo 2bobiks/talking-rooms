@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { AppTheme } from "../../theme/theme.ts";
 
 interface FirstMeetingContainerProps {
   ongoing?: boolean;
@@ -7,7 +6,6 @@ interface FirstMeetingContainerProps {
 
 interface StatusTitleProps {
   ongoing?: boolean;
-  theme: AppTheme;
 }
 
 export const Image = styled.img({
@@ -16,13 +14,17 @@ export const Image = styled.img({
 });
 
 export const FirstMeetingContainer = styled.div<FirstMeetingContainerProps>(
-  (props) => ({
+  ({ ongoing, theme }) => ({
     display: "flex",
     flexDirection: "column",
     paddingBottom: "20px",
-    border: props.ongoing ? "1px solid #FFC9C9" : "1px solid #BEDBFF",
+    border: ongoing
+      ? `1px solid ${theme.palette.colors.firstMeetingOngoing.border}`
+      : `1px solid ${theme.palette.colors.firstMeetingNext.border}`,
     borderRadius: "10px",
-    backgroundColor: props.ongoing ? "#FEF2F2" : "#EFF6FF",
+    backgroundColor: ongoing
+      ? `${theme.palette.colors.firstMeetingOngoing.backgroundColor}`
+      : `${theme.palette.colors.firstMeetingNext.backgroundColor}`,
     padding: "14px",
     maxHeight: "125px",
     gap: "8px",
@@ -39,9 +41,11 @@ export const StatusContainer = styled.div({
   paddingBottom: "6px",
 });
 
-export const StatusTitle = styled.h5<StatusTitleProps>((props) => ({
-  color: props.ongoing ? "#E7000A" : "#145DFC",
-  fontSize: props.theme.meetingTitle?.fontSize,
-  fontWeight: props.theme.meetingTitle?.fontWeight,
-  margin: props.theme.meetingTitle?.margin,
-}));
+export const StatusTitle = styled.h5<StatusTitleProps>(
+  ({ ongoing, theme }) => ({
+    color: ongoing ? "#E7000A" : "#145DFC",
+    fontSize: theme.meetingTitle?.fontSize,
+    fontWeight: theme.meetingTitle?.fontWeight,
+    margin: theme.meetingTitle?.margin,
+  }),
+);
