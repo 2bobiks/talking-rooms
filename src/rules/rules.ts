@@ -60,9 +60,20 @@ const getSortedMeetingIds = (meetings: Meeting[]) => {
   return meetingIds;
 };
 
+const isValidFirstMeeting = (firstMeeting: Meeting | undefined) => {
+  if (firstMeeting) {
+    return Boolean(
+      isToday(firstMeeting.startDate) || isFuture(firstMeeting.startDate),
+    );
+  }
+
+  return false;
+};
+
 export const rules = {
   isTodayNextMeeting,
   isMeetingOngoing,
   meetingStatus: getMeetingStatus,
   getSortedMeetingIds,
+  isValidFirstMeeting,
 };

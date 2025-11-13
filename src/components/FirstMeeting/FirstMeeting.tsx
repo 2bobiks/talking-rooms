@@ -1,11 +1,14 @@
 import { useAppSelector } from "../../redux/store.ts";
-import { selectMeetingById } from "../../redux/meetingsSlice.ts";
+import {
+  selectMeetingById,
+  selectOngoingMeetingsIdsByCalendarId,
+} from "../../redux/meetingsSlice.ts";
 import * as S from "./FirstMeeting.styled.ts";
-import clock from "../../assets/clock.svg";
-import calendar from "../../assets/calendar.svg";
+import Clock from "../../assets/clock.svg?react";
+import Calendar from "../../assets/calendar.svg?react";
 import { rules } from "../../rules/rules.ts";
 import { useAppTheme } from "../../theme/theme.ts";
-import { isFuture, isToday } from "date-fns";
+import { isFuture, isSameDay, isToday } from "date-fns";
 import { meetingStatusHelper } from "../../lib/meetingStatusHelper.ts";
 import { dateHelper } from "../../lib/dateHelper.ts";
 import { MeetingByDate } from "../TodayMeeting/MeetingByDate.tsx";
@@ -18,6 +21,11 @@ export const FirstMeeting = ({ meetingId }: MeetingProps) => {
   const meeting = useAppSelector((state) =>
     selectMeetingById(state, meetingId),
   );
+  const ongoingMeetings = useAppSelector((state) =>
+    meeting
+      ? selectOngoingMeetingsIdsByCalendarId(state, meeting?.calendarId)
+      : undefined,
+  );
   const theme = useAppTheme();
 
   const isOngoing = rules.isMeetingOngoing(meeting);
@@ -25,13 +33,29 @@ export const FirstMeeting = ({ meetingId }: MeetingProps) => {
     meeting && (isToday(meeting.startDate) || isFuture(meeting.startDate)),
   );
 
+  const isConflict = Boolean(
+    ongoingMeetings &&
+      ongoingMeetings.length > 1 &&
+      meeting &&
+      isSameDay(meeting.startDate, new Date()),
+  );
+
+  console.log(`изконфликт ${isConflict}`);
+
   return (
     <>
       {isValidFirstMeeting && (
-        <S.FirstMeetingContainer ongoing={isOngoing}>
+        <S.FirstMeetingContainer ongoing={isOngoing} conflict={isConflict}>
           <S.StatusContainer>
-            <S.Image src={isOngoing ? clock : calendar} alt={"clock"} />
-            <S.StatusTitle ongoing={isOngoing}>
+            {isOngoing && (
+              <Clock
+                width={"18px"}
+                height={"18px"}
+                fill={isConflict ? "#D18700" : "#E7000A"}
+              ></Clock>
+            )}
+            {!isOngoing && <Calendar width={"18px"} height={"18px"}></Calendar>}
+            <S.StatusTitle ongoing={isOngoing} conflict={isConflict}>
               {/* TODO: * i18n */}
               {meetingStatusHelper.getStatusOfFirstMeeting(meeting)}
             </S.StatusTitle>

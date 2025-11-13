@@ -1,6 +1,7 @@
 import { useAppSelector } from "../redux/store.ts";
 import { selectMeetingById } from "../redux/meetingsSlice.ts";
 import { isSameDay } from "date-fns";
+import { useMemo } from "react";
 
 export const useGetFirstMeetings = (
   meetingIdsByCalendarId: string[] | null,
@@ -17,24 +18,29 @@ export const useGetFirstMeetings = (
       : undefined,
   );
 
-  if (meetingIdsByCalendarId) {
-    if (
-      ongoingMeetingsByCalendarId &&
-      ongoingMeetingsByCalendarId.length === 0
-    ) {
+  return useMemo(() => {
+    if (!meetingIdsByCalendarId) return undefined;
+
+    if (!ongoingMeetingsByCalendarId?.length) {
       return [meetingIdsByCalendarId[0]];
     }
+
     if (
       firstOngoingMeetingId &&
       firstMeetingIdByCalendarId &&
       isSameDay(
-        firstOngoingMeetingId?.startDate,
-        firstMeetingIdByCalendarId?.startDate,
+        firstOngoingMeetingId.startDate,
+        firstMeetingIdByCalendarId.startDate,
       )
     ) {
       return ongoingMeetingsByCalendarId;
     }
 
     return undefined;
-  }
+  }, [
+    meetingIdsByCalendarId,
+    ongoingMeetingsByCalendarId,
+    firstOngoingMeetingId,
+    firstMeetingIdByCalendarId,
+  ]);
 };

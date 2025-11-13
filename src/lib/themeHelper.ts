@@ -18,6 +18,10 @@ export type Palette = {
       border: string;
       backgroundColor: string;
     };
+    firstMeetingOngoingConflict: {
+      border: string;
+      backgroundColor: string;
+    };
     statusTitleOccupied: {
       backgroundColor: string;
       color: string;
@@ -51,6 +55,10 @@ const setColorPalette = (isDark: boolean) => {
       firstMeetingOngoing: {
         border: isDark ? "#860101" : "#FFC9C9",
         backgroundColor: isDark ? "#141414" : "#FEF2F2",
+      },
+      firstMeetingOngoingConflict: {
+        border: isDark ? "#D18700" : "#FFEF8D",
+        backgroundColor: isDark ? "#141414" : "#FEFCE9",
       },
       statusTitleOccupied: {
         backgroundColor: isDark ? "#1E1E1E" : "#FEF2F2",

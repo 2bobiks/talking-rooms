@@ -1,8 +1,8 @@
 import {
+  differenceInHours,
   differenceInMinutes,
   format,
   getDay,
-  getHours,
   isToday,
   isValid,
 } from "date-fns";
@@ -62,7 +62,7 @@ const getDayOfTheWeekOrToday = (date: DateString | undefined) => {
 };
 
 const getHourWord = (date: DateString) => {
-  const hours = getHours(date);
+  const hours = differenceInHours(date, new Date());
   const lastDigit = hours % 10;
   const lastTwoDigits = hours % 100;
 

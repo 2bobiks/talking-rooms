@@ -9,7 +9,8 @@ import {
 } from "../../redux/meetingsSlice.ts";
 import { useMemo } from "react";
 import { meetingsSortHelper } from "../../lib/meetingsSortHelper.ts";
-import { useGetFirstMeetings } from "../../hooks/useIsOngoing.ts";
+import { useGetFirstMeetings } from "../../hooks/useGetFirstMeetings.ts";
+import { rules } from "../../rules/rules.ts";
 
 interface MeetingsByCalendarIdProps {
   meetingIdsByCalendarId: string[];
@@ -22,6 +23,11 @@ export const MeetingsByCalendarId = ({
     meetingIdsByCalendarId
       ? selectMeetingById(state, meetingIdsByCalendarId[0])
       : undefined,
+  );
+
+  const isValidFirstMeeting = useMemo(
+    () => rules.isValidFirstMeeting(firstMeeting),
+    [firstMeeting],
   );
 
   const ongoingMeetingsByCalendarId = useAppSelector((state) =>
@@ -43,6 +49,7 @@ export const MeetingsByCalendarId = ({
       ),
     [meetingIdsByCalendarId, ongoingMeetingsByCalendarId],
   );
+  console.log(meetingsIdsByDate);
 
   return (
     <>
@@ -54,16 +61,15 @@ export const MeetingsByCalendarId = ({
         (Встреч: {meetingIdsByCalendarId.length})
       </S.AmountOfMeetingsTitle>
       {firstMeetingsIds && (
-        <S.FirstMeetingsContainer
-          amountOfFirstMeeting={firstMeetingsIds && firstMeetingsIds.length}
-        >
+        <S.FirstMeetingsContainer isValidFirstMeeting={isValidFirstMeeting}>
           {firstMeetingsIds.map((meetingId) => (
             <FirstMeeting key={meetingId} meetingId={meetingId} />
           ))}
         </S.FirstMeetingsContainer>
       )}
+
       {meetingsIdsByDate &&
-        meetingsIdsByDate.length &&
+        !!meetingsIdsByDate.length &&
         meetingsIdsByDate.map((meetingId) => (
           <MeetingByDate key={meetingId} meetingId={meetingId} />
         ))}
