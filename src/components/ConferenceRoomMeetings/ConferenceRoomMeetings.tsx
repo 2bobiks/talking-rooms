@@ -22,9 +22,7 @@ export const ConferenceRoomMeetings = ({
       {isMeetingsExist && (
         <>
           <S.VisibleMeetingsContainer isHidden={isHidden}>
-            <MeetingsByCalendarId
-              meetingIdsByCalendarId={meetingIdsByCalendarId}
-            />
+            <MeetingsByCalendarId meetingIds={meetingIdsByCalendarId} />
           </S.VisibleMeetingsContainer>
           <S.Button onClick={() => setIsHidden((prev) => !prev)}>
             {isHidden ? "Посмотреть расписание" : "Скрыть расписание"}

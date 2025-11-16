@@ -11,68 +11,96 @@ import { useMemo } from "react";
 import { meetingsSortHelper } from "../../lib/meetingsSortHelper.ts";
 import { useGetFirstMeetings } from "../../hooks/useGetFirstMeetings.ts";
 import { rules } from "../../rules/rules.ts";
+import { Meeting, MeetingId } from "../../redux/Meeting.ts";
 
 interface MeetingsByCalendarIdProps {
-  meetingIdsByCalendarId: string[];
+  meetingIds: string[];
 }
 
-export const MeetingsByCalendarId = ({
-  meetingIdsByCalendarId,
-}: MeetingsByCalendarIdProps) => {
-  const firstMeeting = useAppSelector((state) =>
-    meetingIdsByCalendarId
-      ? selectMeetingById(state, meetingIdsByCalendarId[0])
-      : undefined,
-  );
+const getText = (meetingLength: number, startDate: string | undefined) => {
+  return `Расписание на
+  ${dateHelper.getDayOfTheWeekOrToday(startDate)}
+  (Встреч: ${meetingLength})`;
+};
 
+const FirstMeetingsContainer = ({
+  firstMeeting,
+  meetingIds,
+  meetingsIdsByDate,
+}: {
+  firstMeeting: Meeting | undefined;
+  meetingIds: MeetingId[] | undefined;
+  meetingsIdsByDate: MeetingId[] | undefined;
+}) => {
   const isValidFirstMeeting = useMemo(
     () => rules.isValidFirstMeeting(firstMeeting),
     [firstMeeting],
   );
 
-  const ongoingMeetingsByCalendarId = useAppSelector((state) =>
-    firstMeeting
-      ? selectOngoingMeetingsIdsByCalendarId(state, firstMeeting.calendarId)
-      : undefined,
+  const firstMeetingsIds = useGetFirstMeetings({
+    allMeetingIds: meetingIds,
+    ongoingMeetingIds: meetingsIdsByDate,
+  });
+
+  return (
+    (firstMeetingsIds?.length ?? 0) > 0 && (
+      <S.FirstMeetingsContainer isValidFirstMeeting={isValidFirstMeeting}>
+        {firstMeetingsIds?.map((meetingId) => (
+          <FirstMeeting key={meetingId} meetingId={meetingId} />
+        ))}
+      </S.FirstMeetingsContainer>
+    )
+  );
+};
+
+const MeetingByDateContainer = ({
+  meetingIdsByDate,
+}: {
+  meetingIdsByDate: MeetingId[] | undefined;
+}) => {
+  return (
+    (meetingIdsByDate?.length ?? 0) > 0 &&
+    meetingIdsByDate?.map((meetingId) => (
+      <MeetingByDate key={meetingId} meetingId={meetingId} />
+    ))
+  );
+};
+
+export const MeetingsByCalendarId = ({
+  meetingIds,
+}: MeetingsByCalendarIdProps) => {
+  const firstMeetingId = meetingIds[0];
+
+  const firstMeeting = useAppSelector((state) =>
+    selectMeetingById(state, firstMeetingId),
   );
 
-  const firstMeetingsIds = useGetFirstMeetings(
-    meetingIdsByCalendarId,
-    ongoingMeetingsByCalendarId,
+  const ongoingMeetingsByCalendarId = useAppSelector((state) =>
+    selectOngoingMeetingsIdsByCalendarId(state, firstMeeting?.calendarId),
   );
 
   const meetingsIdsByDate = useMemo(
     () =>
       meetingsSortHelper.getMeetingsByDate(
-        meetingIdsByCalendarId,
+        meetingIds,
         ongoingMeetingsByCalendarId,
       ),
-    [meetingIdsByCalendarId, ongoingMeetingsByCalendarId],
+    [meetingIds, ongoingMeetingsByCalendarId],
   );
+
   console.log(meetingsIdsByDate);
 
   return (
     <>
       <S.AmountOfMeetingsTitle>
-        Расписание на{" "}
-        {dateHelper.getDayOfTheWeekOrToday(
-          firstMeeting && firstMeeting.startDate,
-        )}{" "}
-        (Встреч: {meetingIdsByCalendarId.length})
+        {getText(meetingIds.length, firstMeeting?.startDate)}
       </S.AmountOfMeetingsTitle>
-      {firstMeetingsIds && (
-        <S.FirstMeetingsContainer isValidFirstMeeting={isValidFirstMeeting}>
-          {firstMeetingsIds.map((meetingId) => (
-            <FirstMeeting key={meetingId} meetingId={meetingId} />
-          ))}
-        </S.FirstMeetingsContainer>
-      )}
-
-      {meetingsIdsByDate &&
-        !!meetingsIdsByDate.length &&
-        meetingsIdsByDate.map((meetingId) => (
-          <MeetingByDate key={meetingId} meetingId={meetingId} />
-        ))}
+      <FirstMeetingsContainer
+        firstMeeting={firstMeeting}
+        meetingIds={meetingIds}
+        meetingsIdsByDate={meetingsIdsByDate}
+      />
+      <MeetingByDateContainer meetingIdsByDate={meetingsIdsByDate} />
     </>
   );
 };

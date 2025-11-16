@@ -125,7 +125,10 @@ export const selectMeetingWhoDuplicates = createSelector(
 );
 
 export const selectOngoingMeetingsIdsByCalendarId = createSelector(
-  [meetingsAdapterSelectors.selectAll, (_, calendarId: number) => calendarId],
+  [
+    meetingsAdapterSelectors.selectAll,
+    (_, calendarId: number | undefined) => calendarId,
+  ],
   (meetings, calendarId) => {
     return meetings.reduce((acc: MeetingId[], meeting) => {
       if (
@@ -147,12 +150,12 @@ export const selectMeetingsStatus = createSelector(
 
 export const selectMeetingById = createSelector(
   [
-    meetingsAdapterSelectors.selectById,
-    (_, meetingId: MeetingId | null) => meetingId,
+    meetingsAdapterSelectors.selectEntities,
+    (_, meetingId: MeetingId | undefined) => meetingId,
   ],
-  (meeting, meetingId) => {
+  (meetings, meetingId) => {
     if (meetingId) {
-      return meeting;
+      return meetings[meetingId];
     }
 
     return undefined;

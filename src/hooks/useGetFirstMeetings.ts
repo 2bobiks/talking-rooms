@@ -1,46 +1,39 @@
 import { useAppSelector } from "../redux/store.ts";
 import { selectMeetingById } from "../redux/meetingsSlice.ts";
 import { isSameDay } from "date-fns";
-import { useMemo } from "react";
+import { MeetingId } from "../redux/Meeting.ts";
 
-export const useGetFirstMeetings = (
-  meetingIdsByCalendarId: string[] | null,
-  ongoingMeetingsByCalendarId: string[] | undefined,
-) => {
-  const firstOngoingMeetingId = useAppSelector((state) =>
-    ongoingMeetingsByCalendarId
-      ? selectMeetingById(state, ongoingMeetingsByCalendarId[0])
-      : undefined,
+export interface UseGetFirstMeetingsArgs {
+  allMeetingIds: string[] | undefined;
+  ongoingMeetingIds: string[] | undefined;
+}
+
+export const useGetFirstMeetings = ({
+  allMeetingIds,
+  ongoingMeetingIds,
+}: UseGetFirstMeetingsArgs): MeetingId[] | undefined => {
+  const firstOngoingId: MeetingId | undefined = ongoingMeetingIds?.[0];
+  const nextMeetingId: MeetingId | undefined = allMeetingIds?.[0];
+
+  const firstOngoingMeeting = useAppSelector((state) =>
+    selectMeetingById(state, firstOngoingId),
   );
-  const firstMeetingIdByCalendarId = useAppSelector((state) =>
-    meetingIdsByCalendarId
-      ? selectMeetingById(state, meetingIdsByCalendarId[0])
-      : undefined,
+
+  const nextMeeting = useAppSelector((state) =>
+    selectMeetingById(state, nextMeetingId),
   );
 
-  return useMemo(() => {
-    if (!meetingIdsByCalendarId) return undefined;
+  if (!ongoingMeetingIds?.length && nextMeetingId) {
+    return [nextMeetingId];
+  }
 
-    if (!ongoingMeetingsByCalendarId?.length) {
-      return [meetingIdsByCalendarId[0]];
-    }
+  if (
+    firstOngoingMeeting?.startDate &&
+    nextMeeting?.startDate &&
+    isSameDay(firstOngoingMeeting.startDate, nextMeeting.startDate)
+  ) {
+    return ongoingMeetingIds;
+  }
 
-    if (
-      firstOngoingMeetingId &&
-      firstMeetingIdByCalendarId &&
-      isSameDay(
-        firstOngoingMeetingId.startDate,
-        firstMeetingIdByCalendarId.startDate,
-      )
-    ) {
-      return ongoingMeetingsByCalendarId;
-    }
-
-    return undefined;
-  }, [
-    meetingIdsByCalendarId,
-    ongoingMeetingsByCalendarId,
-    firstOngoingMeetingId,
-    firstMeetingIdByCalendarId,
-  ]);
+  return undefined;
 };

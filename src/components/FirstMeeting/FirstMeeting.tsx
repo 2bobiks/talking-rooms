@@ -17,6 +17,25 @@ interface MeetingProps {
   meetingId: string;
 }
 
+// TODO: разделит на компоненты
+// const A = () => {
+//   return (
+//     <>
+//       <span style={theme.meetingTitle}>
+//         {meeting?.title ? meeting.title : "Встреча"}
+//       </span>
+//       <span style={theme.meetingTime}>
+//         {dateHelper.getTimeRange(meeting?.startDate, meeting?.endDate)}
+//       </span>
+//       {meeting?.who ? (
+//         <span style={theme.meetingWho}>Организатор: {meeting.who}</span>
+//       ) : (
+//         <span style={theme.meetingWho}>Организатора нет</span>
+//       )}
+//     </>
+//   );
+// };
+
 export const FirstMeeting = ({ meetingId }: MeetingProps) => {
   const meeting = useAppSelector((state) =>
     selectMeetingById(state, meetingId),

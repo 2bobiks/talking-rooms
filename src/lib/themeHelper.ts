@@ -1,41 +1,45 @@
+type Color = `#${string}`;
+
 export type Palette = {
   colors: {
-    background: string;
+    background: Color;
     textColor: {
-      primary: string;
-      secondary: string;
+      primary: Color;
+      secondary: Color;
     };
-    borderColor: string;
-    meetingColor: string;
-    hoverButton: string;
-    meetingContainer: string;
-    dropdownBackground: string;
+    borderColor: Color;
+    meetingColor: Color;
+    hoverButton: Color;
+    meetingContainer: Color;
+    dropdownBackground: Color;
     firstMeetingNext: {
-      border: string;
-      backgroundColor: string;
+      border: Color;
+      backgroundColor: Color;
     };
     firstMeetingOngoing: {
-      border: string;
-      backgroundColor: string;
+      border: Color;
+      backgroundColor: Color;
     };
     firstMeetingOngoingConflict: {
-      border: string;
-      backgroundColor: string;
+      border: Color;
+      backgroundColor: Color;
     };
     statusTitleOccupied: {
-      backgroundColor: string;
-      color: string;
+      backgroundColor: Color;
+      color: Color;
     };
     statusTitleAvailable: {
-      backgroundColor: string;
-      color: string;
+      backgroundColor: Color;
+      color: Color;
     };
-    skeleton: string;
+    skeleton: Color;
     themeName: string;
   };
 };
 
-const setColorPalette = (isDark: boolean) => {
+// TODO: передел на обьект вроде { dark: ..., light: ... }
+
+const setColorPalette = (isDark: boolean): Palette => {
   return {
     colors: {
       background: isDark ? "#171717" : "#FFFFFF",
@@ -69,6 +73,7 @@ const setColorPalette = (isDark: boolean) => {
         color: isDark ? "#08D464" : "#036730",
       },
       skeleton: isDark ? "#272727" : "#f6f6f6",
+      // не должно быть в палете
       themeName: isDark ? "dark" : "light",
     },
   };
