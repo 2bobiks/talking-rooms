@@ -10,7 +10,7 @@
 [![](https://img.shields.io/badge/-TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![](https://img.shields.io/badge/-Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![](https://img.shields.io/badge/-Redux%20Toolkit-764ABC?style=for-the-badge&logo=redux&logoColor=white)](https://redux-toolkit.js.org/)
-[![](https://img.shields.io/badge/-CSS%20Modules-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://github.com/css-modules/css-modules)
+[![](https://img.shields.io/badge/-Emotion-FF4785?style=for-the-badge&logo=emotion&logoColor=white)](https://emotion.sh/docs/introduction)
 
 Особенности:
 
@@ -18,6 +18,7 @@
 - Статусы комнат и актуальные встречи
 - Фильтрация и сортировка встреч
 - Интеграция с календарными API
+- Темизация с помощью Emotion
 
 Структура проекта:
 
