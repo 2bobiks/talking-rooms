@@ -29,8 +29,12 @@ export const Button = styled.button`
   background-color: transparent;
   font-size: 0.88em;
   transition:
-    transform 0.1s ease,
-    backgroundColor 0.1s ease;
+    transform 0.3s ease,
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    fill 0.3s ease,
+    stroke 0.3s ease;
 
   &:hover {
     transform: scale(0.97);
