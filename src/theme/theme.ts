@@ -1,65 +1,64 @@
-import { Theme } from "@emotion/react";
-import * as React from "react";
+import { useTheme } from "@emotion/react";
+import { CSSProperties } from "react";
+import { Palette } from "../lib/themeHelper.ts";
 
-interface StyleObject extends React.CSSProperties {
-  color?: string;
-  fontSize?: string;
-  fontWeight?: number | string;
-  margin?: string | number;
-  size?: string;
-  display?: string;
-  flexDirection?: "row-reverse" | "row" | "column" | "column-reverse";
-  flex?: number | string;
-  minWidth?: number | string;
-  border?: string;
-  borderRadius?: string;
-  padding?: string;
-  gap?: string;
+export interface AppTheme {
+  meetingTitle: CSSProperties;
+  meetingTime: CSSProperties;
+  meetingWho: CSSProperties;
+  mainContainer: CSSProperties;
+  meetingContainer: CSSProperties;
+  container: CSSProperties;
+  palette: Palette;
 }
 
-export interface MyTheme extends Theme {
-  meetingTitle?: StyleObject;
-  meetingTime?: StyleObject;
-  meetingWho?: StyleObject;
-  mainContainer?: StyleObject;
-  meetingContainer?: StyleObject;
-}
+export type AppThemeExtended = AppTheme & { palette: Palette };
 
-export const theme: MyTheme = {
-  meetingTitle: {
-    color: "#0a0a0a",
-    fontSize: "0.9em",
-    fontWeight: 400,
-    margin: 0,
-  },
-  meetingTime: {
-    margin: 0,
-    color: "#717182",
-    fontWeight: 400,
-    fontSize: "0.74em",
-  },
-  meetingWho: {
-    margin: 0,
-    color: "#717182",
-    fontWeight: 400,
-    fontSize: "0.83em",
-  },
-  mainContainer: {
-    display: "flex",
-    flexDirection: "column",
-    flex: 1,
-    minWidth: 0,
-    border: "1px solid #E8E8E8",
-    borderRadius: "16px",
-    padding: "28px",
-    gap: "8px",
-  },
-  meetingContainer: {
-    display: "flex",
-    flexDirection: "column",
-    padding: "14px",
-    gap: "8px",
-    border: "1px solid #EAEAEA",
-    borderRadius: "10px",
-  },
+export const theme = (palette: Palette): AppThemeExtended => {
+  const colorPalette = palette.colors;
+
+  return {
+    meetingTitle: {
+      color: colorPalette.textColor.primary,
+      fontSize: "0.9em",
+      fontWeight: 400,
+      margin: 0,
+    },
+    meetingTime: {
+      margin: 0,
+      color: colorPalette.textColor.secondary,
+      fontWeight: 400,
+      fontSize: "0.74em",
+    },
+    meetingWho: {
+      margin: 0,
+      color: colorPalette.textColor.secondary,
+      fontWeight: 400,
+      fontSize: "0.83em",
+    },
+    mainContainer: {
+      display: "flex",
+      flexDirection: "column",
+      flex: 1,
+      minWidth: 0,
+      border: `1px solid ${colorPalette.borderColor}`,
+      borderRadius: "16px",
+      padding: "28px",
+      gap: "8px",
+    },
+    meetingContainer: {
+      display: "flex",
+      flexDirection: "column",
+      padding: "14px",
+      gap: "8px",
+      border: `1px solid ${colorPalette.borderColor}`,
+      borderRadius: "10px",
+    },
+    container: {
+      backgroundColor: colorPalette.background,
+    },
+    palette,
+  };
 };
+
+export const useAppTheme = (): AppTheme => useTheme() as AppTheme;

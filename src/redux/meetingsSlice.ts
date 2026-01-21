@@ -5,6 +5,9 @@ import { rules } from "../rules/rules.ts";
 import { api } from "../api/api.ts";
 import { isSameDay, isToday } from "date-fns";
 import { Filter } from "../components/AllMeetings/AllMeetings.tsx";
+import { RootState } from "./store.ts";
+import { meetingStatusHelper } from "../lib/meetingStatusHelper.ts";
+import { meetingCalendarIdHelper } from "../lib/meetingCalendarIdHelper.ts";
 
 type StatusType = "error" | "loading" | "fulfilled";
 
@@ -52,12 +55,13 @@ export const selectMeetingsIdsByFilter = createSelector(
       meetings.filter((meeting) => {
         const filterByStatus =
           !filter.status ||
-          rules.statusName(rules.meetingStatus(meeting)) === filter.status;
+          meetingStatusHelper.getStatusName(rules.meetingStatus(meeting)) ===
+            filter.status;
 
         const filterByRoomName =
           !filter.meetingRoom ||
           meeting.calendarId ===
-            rules.getCalendarIdByRoomName(filter.meetingRoom);
+            meetingCalendarIdHelper.getCalendarIdByRoomName(filter.meetingRoom);
 
         const filterByWho = !filter.who || meeting.who === filter.who;
 
@@ -70,36 +74,27 @@ export const selectMeetingsIdsByFilter = createSelector(
 export const selectMeetingsIdsByCalendarIdAndDate = createSelector(
   [
     meetingsAdapterSelectors.selectAll,
-    (_, props: { calendarId: number; date: DateString }) => props,
+    (_, calendarId: number) => calendarId,
+    (_, __: number, date: DateString) => date,
   ],
-  (meetings, { calendarId, date }) => {
-    if (calendarId) {
-      if (isToday(date)) {
-        return meetings.reduce((acc: MeetingId[], meeting) => {
-          if (
-            calendarId === meeting.calendarId &&
-            rules.isTodayNextMeeting(meeting.startDate, meeting.endDate)
-          ) {
-            acc.push(meeting.meetingId);
-          }
+  (meetings, calendarId, date) => {
+    if (!calendarId) return null;
 
-          return acc;
-        }, []);
-      } else {
-        return meetings.reduce((acc: MeetingId[], meeting) => {
-          if (
-            calendarId === meeting.calendarId &&
-            isSameDay(date, meeting.startDate)
-          ) {
-            acc.push(meeting.meetingId);
-          }
+    const isTodayDate = isToday(date);
+    const targetDate = new Date(date);
 
-          return acc;
-        }, []);
+    return meetings.reduce((acc: MeetingId[], meeting) => {
+      if (
+        meeting.calendarId === calendarId &&
+        (isTodayDate
+          ? rules.isTodayNextMeeting(meeting.startDate, meeting.endDate)
+          : isSameDay(targetDate, meeting.startDate))
+      ) {
+        acc.push(meeting.meetingId);
       }
-    }
 
-    return null;
+      return acc;
+    }, []);
   },
 );
 
@@ -130,7 +125,10 @@ export const selectMeetingWhoDuplicates = createSelector(
 );
 
 export const selectOngoingMeetingsIdsByCalendarId = createSelector(
-  [meetingsAdapterSelectors.selectAll, (_, calendarId: number) => calendarId],
+  [
+    meetingsAdapterSelectors.selectAll,
+    (_, calendarId: number | undefined) => calendarId,
+  ],
   (meetings, calendarId) => {
     return meetings.reduce((acc: MeetingId[], meeting) => {
       if (
@@ -145,14 +143,19 @@ export const selectOngoingMeetingsIdsByCalendarId = createSelector(
   },
 );
 
+export const selectMeetingsStatus = createSelector(
+  (state: RootState) => state.meetings,
+  (meetings) => meetings.status,
+);
+
 export const selectMeetingById = createSelector(
   [
-    meetingsAdapterSelectors.selectById,
-    (_, meetingId: MeetingId | null) => meetingId,
+    meetingsAdapterSelectors.selectEntities,
+    (_, meetingId: MeetingId | undefined) => meetingId,
   ],
-  (meeting, meetingId) => {
+  (meetings, meetingId) => {
     if (meetingId) {
-      return meeting;
+      return meetings[meetingId];
     }
 
     return undefined;

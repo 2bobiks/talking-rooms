@@ -1,46 +1,37 @@
 import { useState } from "react";
 import * as S from "./ConferenceRoomMeetings.styled.ts";
-import { MeetingByCalendarId } from "../MeetingByCalendarId/MeetingByCalendarId.tsx";
+import { MeetingsByCalendarId } from "../MeetingsByCalendarId/MeetingsByCalendarId.tsx";
 
 interface ConferenceRoomMeetingsProps {
   meetingIdsByCalendarId: string[] | null;
 }
 
+const isExist = (
+  meetingIdsByCalendarId: string[] | null,
+): meetingIdsByCalendarId is string[] =>
+  Boolean(meetingIdsByCalendarId && meetingIdsByCalendarId.length);
+
 export const ConferenceRoomMeetings = ({
   meetingIdsByCalendarId,
 }: ConferenceRoomMeetingsProps) => {
   const [isHidden, setIsHidden] = useState(true);
-  const isMeetingsExist = Boolean(
-    meetingIdsByCalendarId && meetingIdsByCalendarId.length,
-  );
+  const isMeetingsExist = isExist(meetingIdsByCalendarId);
 
   return (
     <>
-      {isMeetingsExist && meetingIdsByCalendarId && (
+      {isMeetingsExist && (
         <>
           <S.VisibleMeetingsContainer isHidden={isHidden}>
-            {meetingIdsByCalendarId.map((meetingId, index) => (
-              <MeetingByCalendarId
-                meetingId={meetingId}
-                key={meetingId}
-                indexOfMeeting={index}
-                amountOfMeetings={meetingIdsByCalendarId.length}
-              />
-            ))}
+            <MeetingsByCalendarId meetingIds={meetingIdsByCalendarId} />
           </S.VisibleMeetingsContainer>
-          {isHidden && (
-            <S.Button onClick={() => setIsHidden((prev) => !prev)}>
-              Посмотреть расписание
-            </S.Button>
-          )}
-          {!isHidden && (
-            <S.Button onClick={() => setIsHidden((prev) => !prev)}>
-              Скрыть расписание
-            </S.Button>
-          )}
+          <S.Button onClick={() => setIsHidden((prev) => !prev)}>
+            {isHidden ? "Посмотреть расписание" : "Скрыть расписание"}
+          </S.Button>
         </>
       )}
-      {!isMeetingsExist && <span>сосамба нету митингов</span>}
+      {!isMeetingsExist && (
+        <S.NoMeetingTitle>сосамба нету митингов</S.NoMeetingTitle>
+      )}
     </>
   );
 };

@@ -2,7 +2,8 @@ import { Dropdown } from "primereact/dropdown";
 import { Dispatch, SetStateAction } from "react";
 import * as S from "./DropdownFilter.styled.ts";
 import { Filter } from "../AllMeetings/AllMeetings.tsx";
-import { rules } from "../../rules/rules.ts";
+import { dropdownHelper } from "../../lib/dropdownHelper.ts";
+import { useAppTheme } from "../../theme/theme.ts";
 
 interface DropdownFilterProps {
   filterType: keyof Filter;
@@ -17,6 +18,8 @@ export const DropdownFilter = ({
   setFilter,
   meetingWhoDuplicates,
 }: DropdownFilterProps) => {
+  const theme = useAppTheme();
+
   return (
     <div>
       {!(filterType === "who" && meetingWhoDuplicates.length === 0) && (
@@ -29,13 +32,16 @@ export const DropdownFilter = ({
           }
           options={
             filterType === "who"
-              ? rules.getDropdownOptions(filterType, meetingWhoDuplicates)
-              : rules.getDropdownOptions(filterType)
+              ? dropdownHelper.getDropdownOptions(
+                  filterType,
+                  meetingWhoDuplicates,
+                )
+              : dropdownHelper.getDropdownOptions(filterType)
           }
           optionLabel="name"
           showClear
-          placeholder={rules.getDropdownPlaceholder(filterType)}
-          style={S.dropdownFilterStyled}
+          placeholder={dropdownHelper.getDropdownPlaceholder(filterType)}
+          style={S.dropdownFilterStyled(theme)}
           panelClassName={S.dropdownAllElements}
           itemTemplate={(option) => (
             <S.DropdownWrapper>{option}</S.DropdownWrapper>

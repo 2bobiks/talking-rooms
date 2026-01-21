@@ -1,34 +1,43 @@
 import styled from "@emotion/styled";
-import { MyTheme } from "../../theme/theme.ts";
 
 interface FirstMeetingContainerProps {
   ongoing?: boolean;
+  conflict: boolean;
 }
 
 interface StatusTitleProps {
   ongoing?: boolean;
-  theme: MyTheme;
+  conflict: boolean;
 }
 
-export const Image = styled.img({
-  width: "18px",
-  height: "18px",
-});
-
 export const FirstMeetingContainer = styled.div<FirstMeetingContainerProps>(
-  (props) => ({
-    display: "flex",
-    flexDirection: "column",
-    paddingBottom: "20px",
-    border: props.ongoing ? "1px solid #FFC9C9" : "1px solid #BEDBFF",
-    borderRadius: "10px",
-    backgroundColor: props.ongoing ? "#FEF2F2" : "#EFF6FF",
-    padding: "14px",
-    maxHeight: "125px",
-    gap: "8px",
-    flex: 1,
-    marginBottom: "22px",
-  }),
+  ({ ongoing, theme, conflict }) => {
+    let borderColor = theme.palette.colors.firstMeetingNext.border;
+    let backgroundColor = theme.palette.colors.firstMeetingNext.backgroundColor;
+
+    if (ongoing && !conflict) {
+      borderColor = theme.palette.colors.firstMeetingOngoing.border;
+      backgroundColor =
+        theme.palette.colors.firstMeetingOngoing.backgroundColor;
+    } else if (ongoing && conflict) {
+      borderColor = theme.palette.colors.firstMeetingOngoingConflict.border;
+      backgroundColor =
+        theme.palette.colors.firstMeetingOngoingConflict.backgroundColor;
+    }
+
+    return {
+      display: "flex",
+      flexDirection: "column",
+      paddingBottom: "20px",
+      border: `1px solid ${borderColor}`,
+      borderRadius: "10px",
+      backgroundColor,
+      padding: "14px",
+      maxHeight: "125px",
+      gap: "8px",
+      flex: 1,
+    };
+  },
 );
 
 export const StatusContainer = styled.div({
@@ -39,9 +48,21 @@ export const StatusContainer = styled.div({
   paddingBottom: "6px",
 });
 
-export const StatusTitle = styled.h5<StatusTitleProps>((props) => ({
-  color: props.ongoing ? "#E7000A" : "#145DFC",
-  fontSize: props.theme.meetingTitle?.fontSize,
-  fontWeight: props.theme.meetingTitle?.fontWeight,
-  margin: props.theme.meetingTitle?.margin,
-}));
+export const StatusTitle = styled.h5<StatusTitleProps>(
+  ({ ongoing, theme, conflict }) => {
+    let textColor = "#145DFC";
+    if (ongoing && !conflict) {
+      textColor = "#E7000A";
+    }
+    if (ongoing && conflict) {
+      textColor = "#D18700";
+    }
+
+    return {
+      color: textColor,
+      fontSize: theme.meetingTitle?.fontSize,
+      fontWeight: theme.meetingTitle?.fontWeight,
+      margin: theme.meetingTitle?.margin,
+    };
+  },
+);

@@ -3,12 +3,10 @@ import {
   selectMeetingsIdsByFilter,
   selectMeetingWhoDuplicates,
 } from "../../redux/meetingsSlice.ts";
-import { Meeting } from "../Meeting/Meeting.tsx";
-import { useTheme } from "@emotion/react";
-import { MyTheme } from "../../theme/theme.ts";
 import * as S from "./AllMeetings.styled.ts";
 import { DropdownFilter } from "../DropDownFilter/DropdownFilter.tsx";
 import { useState } from "react";
+import { Meeting } from "../Meeting/Meeting.tsx";
 
 export interface Filter {
   meetingRoom: string | undefined;
@@ -17,11 +15,17 @@ export interface Filter {
 }
 
 export const AllMeetings = () => {
-  const [filter, setFilter] = useState<Filter>({
+  // почему обьект в стейте это чаще всего плохо ? + почему лучше вот такой вариант
+  // const [filter, setFilter] = useState<Filter>(() => ({
+  //   meetingRoom: undefined,
+  //   status: undefined,
+  //   who: undefined,
+  // }));
+  const [filter, setFilter] = useState<Filter>(() => ({
     meetingRoom: undefined,
     status: undefined,
     who: undefined,
-  });
+  }));
 
   const meetingIds = useAppSelector((state) =>
     selectMeetingsIdsByFilter(state, filter),
@@ -31,11 +35,10 @@ export const AllMeetings = () => {
     selectMeetingWhoDuplicates(state),
   );
 
-  const theme: MyTheme = useTheme();
-
   return (
-    <S.AllMeetingsContainer theme={theme}>
+    <S.AllMeetingsContainer>
       <S.TitleContainer>Все встречи</S.TitleContainer>
+      {/* TODO: сюда только функцию для обновления  */}
       <S.FilterContainer>
         {(Object.keys(filter) as Array<keyof Filter>).map((filterType) => (
           <DropdownFilter
@@ -47,6 +50,7 @@ export const AllMeetings = () => {
           />
         ))}
       </S.FilterContainer>
+      {/* TODO: сюда само значение фильтра */}
       <S.MeetingsContainer>
         {meetingIds &&
           meetingIds.map((meetingId) => (
